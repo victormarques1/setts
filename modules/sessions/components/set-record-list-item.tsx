@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { formatWeight } from "@/lib/format-weight";
+import { DeleteSetRecordDialog } from "@/modules/sessions/components/delete-set-record-dialog";
 import { EditSetRecordDialog } from "@/modules/sessions/components/edit-set-record-dialog";
 
 type SetRecordItem = {
@@ -30,6 +31,12 @@ export function SetRecordListItem({
   set,
 }: SetRecordListItemProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  function handleRequestDelete() {
+    setIsEditOpen(false);
+    setIsDeleteOpen(true);
+  }
 
   return (
     <>
@@ -63,6 +70,19 @@ export function SetRecordListItem({
           initialWeight={set.weight}
           initialReps={set.reps}
           onClose={() => setIsEditOpen(false)}
+          onRequestDelete={handleRequestDelete}
+        />
+      ) : null}
+      {isDeleteOpen ? (
+        <DeleteSetRecordDialog
+          workoutId={workoutId}
+          sessionId={sessionId}
+          exerciseId={exerciseId}
+          setRecordId={set.id}
+          setNumber={set.setNumber}
+          weight={set.weight}
+          reps={set.reps}
+          onClose={() => setIsDeleteOpen(false)}
         />
       ) : null}
     </>

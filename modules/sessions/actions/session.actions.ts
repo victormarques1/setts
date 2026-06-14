@@ -23,6 +23,7 @@ import {
   SetRecordNotFoundError,
   updateSetRecordService,
 } from "@/modules/sessions/services/update-set-record.service";
+import { deleteSetRecordService } from "@/modules/sessions/services/delete-set-record.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
 type WorkoutSessionWithSets = WorkoutSession & { setRecords: SetRecord[] };
@@ -37,6 +38,18 @@ function getExerciseLoggerPath(
   exerciseId: string,
 ) {
   return `/workouts/${workoutId}/sessions/${sessionId}/exercises/${exerciseId}`;
+}
+
+function revalidateSetRecordPaths(
+  workoutId: string,
+  sessionId: string,
+  exerciseId: string,
+) {
+  revalidatePath(`/workouts/${workoutId}`);
+  revalidatePath(getSessionPath(workoutId, sessionId));
+  revalidatePath(getExerciseLoggerPath(workoutId, sessionId, exerciseId));
+  revalidatePath("/progress");
+  revalidatePath("/history");
 }
 
 export async function listCompletedSessionsAction(): Promise<
@@ -167,11 +180,7 @@ export async function updateSetRecordAction(
       sessionId,
       exerciseId,
     );
-    revalidatePath(`/workouts/${workoutId}`);
-    revalidatePath(getSessionPath(workoutId, sessionId));
-    revalidatePath(getExerciseLoggerPath(workoutId, sessionId, exerciseId));
-    revalidatePath("/progress");
-    revalidatePath("/history");
+    revalidateSetRecordPaths(workoutId, sessionId, exerciseId);
     return actionSuccess(setRecord);
   } catch (error) {
     if (error instanceof SetRecordNotFoundError) {
@@ -183,5 +192,35 @@ export async function updateSetRecordAction(
     }
 
     return actionError("Não foi possível atualizar a série.");
+  }
+}
+
+export async function deleteSetRecordAction(
+  workoutId: string,
+  sessionId: string,
+  exerciseId: string,
+  setRecordId: string,
+): Promise<ActionResult<void>> {
+  try {
+    const userId = await getCurrentUserId();
+    await deleteSetRecordService.delete(
+      { id: setRecordId },
+      userId,
+      workoutId,
+      sessionId,
+      exerciseId,
+    );
+    revalidateSetRecordPaths(workoutId, sessionId, exerciseId);
+    return actionSuccess(undefined);
+  } catch (error) {
+    if (error instanceof SetRecordNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof z.ZodError) {
+      return actionError(error.issues[0]?.message ?? "Dados inválidos.");
+    }
+
+    return actionError("Não foi possível excluir a série.");
   }
 }

@@ -27,4 +27,10 @@ export const setRecordRepository = {
       data: { weight, reps },
     });
   },
+
+  delete(id: string) {
+    return prisma.setRecord.delete({
+      where: { id },
+    });
+  },
 };

@@ -27,6 +27,7 @@ type EditSetRecordDialogProps = {
   initialWeight: number;
   initialReps: number;
   onClose: () => void;
+  onRequestDelete: () => void;
 };
 
 export function EditSetRecordDialog({
@@ -38,6 +39,7 @@ export function EditSetRecordDialog({
   initialWeight,
   initialReps,
   onClose,
+  onRequestDelete,
 }: EditSetRecordDialogProps) {
   const router = useRouter();
   const [weight, setWeight] = useState(formatWeight(initialWeight));
@@ -128,26 +130,37 @@ export function EditSetRecordDialog({
                 {error}
               </p>
             ) : null}
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-              <DialogClose
-                render={
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                    disabled={isPending}
-                  />
-                }
-              >
-                Cancelar
-              </DialogClose>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <DialogClose
+                  render={
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      disabled={isPending}
+                    />
+                  }
+                >
+                  Cancelar
+                </DialogClose>
+                <Button
+                  className="w-full sm:w-auto"
+                  type="submit"
+                  disabled={isPending}
+                  aria-busy={isPending}
+                >
+                  {isPending ? "Salvando..." : "Salvar"}
+                </Button>
+              </div>
               <Button
-                className="w-full sm:w-auto"
-                type="submit"
+                type="button"
+                variant="destructive"
+                className="w-full"
                 disabled={isPending}
-                aria-busy={isPending}
+                onClick={onRequestDelete}
               >
-                {isPending ? "Salvando..." : "Salvar"}
+                Excluir
               </Button>
             </div>
           </form>

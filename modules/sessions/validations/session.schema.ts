@@ -30,9 +30,14 @@ export const updateSetRecordSchema = updateSetRecordFormSchema.extend({
   id: z.string().min(1),
 });
 
+export const deleteSetRecordSchema = z.object({
+  id: z.string().min(1),
+});
+
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
 export type CompleteSessionInput = z.infer<typeof completeSessionSchema>;
 export type CreateSetRecordFormInput = z.input<typeof createSetRecordFormSchema>;
 export type CreateSetRecordInput = z.infer<typeof createSetRecordSchema>;
 export type UpdateSetRecordFormInput = z.input<typeof updateSetRecordFormSchema>;
 export type UpdateSetRecordInput = z.infer<typeof updateSetRecordSchema>;
+export type DeleteSetRecordInput = z.infer<typeof deleteSetRecordSchema>;
