@@ -1,9 +1,7 @@
 import { exerciseRepository } from "@/modules/exercises/repositories/exercise.repository";
 import {
   createExerciseSchema,
-  updateExerciseSchema,
   type CreateExerciseInput,
-  type UpdateExerciseInput,
 } from "@/modules/exercises/validations/exercise.schema";
 import { workoutRepository } from "@/modules/workouts/repositories/workout.repository";
 
@@ -91,11 +89,6 @@ export const exerciseService = {
     }
 
     return exerciseRepository.create(data);
-  },
-
-  update(input: UpdateExerciseInput) {
-    const data = updateExerciseSchema.parse(input);
-    return exerciseRepository.update(data.id, data.name);
   },
 
   delete(id: string) {
