@@ -7,15 +7,14 @@ import {
 } from "@/lib/action-result";
 import {
   progressService,
-  type ProgressDataPoint,
+  type ExerciseProgressPoint,
 } from "@/modules/progress/services/progress.service";
-import type { ProgressQueryInput } from "@/modules/progress/validations/progress.schema";
 
 export async function getExerciseProgressAction(
-  input: ProgressQueryInput,
-): Promise<ActionResult<ProgressDataPoint[]>> {
+  exerciseId: string,
+): Promise<ActionResult<ExerciseProgressPoint[]>> {
   try {
-    const progress = await progressService.getExerciseProgress(input);
+    const progress = await progressService.getExerciseProgress(exerciseId);
     return actionSuccess(progress);
   } catch {
     return actionError("Não foi possível carregar a progressão.");

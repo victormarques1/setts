@@ -1,37 +1,14 @@
-import { progressRepository } from "@/modules/progress/repositories/progress.repository";
 import {
-  progressQuerySchema,
-  type ProgressQueryInput,
-} from "@/modules/progress/validations/progress.schema";
+  progressRepository,
+  type ExerciseProgressPoint,
+} from "@/modules/progress/repositories/progress.repository";
+import { exerciseProgressSchema } from "@/modules/progress/validations/progress.schema";
 
-export type ProgressDataPoint = {
-  performedAt: Date;
-  setNumber: number;
-  weight: number;
-  reps: number;
-};
+export type { ExerciseProgressPoint };
 
 export const progressService = {
-  getExerciseProgress(input: ProgressQueryInput): Promise<ProgressDataPoint[]> {
-    const query = progressQuerySchema.parse(input);
-
-    return progressRepository.findSetRecordsByExercise(query).then((records) =>
-      records.flatMap((record) => {
-        const performedAt = record.session.performedAt;
-
-        if (!performedAt) {
-          return [];
-        }
-
-        return [
-          {
-            performedAt,
-            setNumber: record.setNumber,
-            weight: record.weight,
-            reps: record.reps,
-          },
-        ];
-      }),
-    );
+  getExerciseProgress(exerciseId: string): Promise<ExerciseProgressPoint[]> {
+    exerciseProgressSchema.parse({ exerciseId });
+    return progressRepository.getExerciseProgress(exerciseId);
   },
 };

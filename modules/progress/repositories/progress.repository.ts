@@ -1,31 +1,54 @@
 import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { ProgressQueryInput } from "@/modules/progress/validations/progress.schema";
+
+export type ExerciseProgressPoint = {
+  date: string;
+  weight: number;
+};
+
+function formatDateOnly(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 export const progressRepository = {
-  findSetRecordsByExercise(input: ProgressQueryInput) {
-    const { exerciseId, from, to } = input;
-
-    return prisma.setRecord.findMany({
+  async getExerciseProgress(
+    exerciseId: string,
+  ): Promise<ExerciseProgressPoint[]> {
+    const sessions = await prisma.workoutSession.findMany({
       where: {
-        exerciseId,
-        session: {
-          status: WorkoutSessionStatus.COMPLETED,
-          performedAt: {
-            not: null,
-            ...(from ? { gte: from } : {}),
-            ...(to ? { lte: to } : {}),
-          },
+        setRecords: {
+          some: { exerciseId },
         },
+        status: WorkoutSessionStatus.COMPLETED,
+        performedAt: { not: null },
       },
       include: {
-        session: {
-          select: { performedAt: true },
+        setRecords: {
+          where: { exerciseId },
+          select: { weight: true },
         },
       },
-      orderBy: {
-        session: { performedAt: "asc" },
-      },
+      orderBy: { performedAt: "asc" },
+    });
+
+    return sessions.flatMap((session) => {
+      if (!session.performedAt || session.setRecords.length === 0) {
+        return [];
+      }
+
+      const maxWeight = Math.max(
+        ...session.setRecords.map((record) => record.weight),
+      );
+
+      return [
+        {
+          date: formatDateOnly(session.performedAt),
+          weight: maxWeight,
+        },
+      ];
     });
   },
 };
