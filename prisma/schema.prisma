@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       String    @id @default(cuid())
+  name     String
+  email    String    @unique
+  workouts Workout[]
+}
+
+model Workout {
+  id        String           @id @default(cuid())
+  userId    String
+  name      String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises Exercise[]
+  sessions  WorkoutSession[]
+
+  @@index([userId])
+}
+
+model Exercise {
+  id         String      @id @default(cuid())
+  workoutId  String
+  name       String
+  workout    Workout     @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  setRecords SetRecord[]
+
+  @@index([workoutId])
+}
+
+model WorkoutSession {
+  id          String      @id @default(cuid())
+  workoutId   String
+  performedAt DateTime    @default(now())
+  workout     Workout     @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  setRecords  SetRecord[]
+
+  @@index([workoutId])
+  @@index([performedAt])
+}
+
+model SetRecord {
+  id         String         @id @default(cuid())
+  sessionId  String
+  exerciseId String
+  setNumber  Int
+  weight     Float
+  reps       Int
+  session    WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise   Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, exerciseId, setNumber])
+  @@index([sessionId])
+  @@index([exerciseId])
+}

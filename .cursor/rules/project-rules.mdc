@@ -43,3 +43,32 @@ O foco é:
 - histórico
 
 Não implementar funcionalidades fora do MVP sem solicitação explícita.
+
+# Git Workflow
+
+Toda feature implementada deve:
+
+1. Respeitar o escopo do roadmap.
+2. Não alterar funcionalidades não relacionadas.
+3. Passar pelo lint e typecheck.
+4. Gerar uma sugestão de commit utilizando Conventional Commits.
+
+Formato:
+
+type(scope): descrição
+
+Exemplos:
+
+feat(workouts): create workout CRUD
+
+feat(exercises): add exercise creation flow
+
+feat(sessions): register workout sets
+
+feat(progress): add weight progression chart
+
+fix(workouts): validate workout name
+
+refactor(repositories): extract prisma queries
+
+docs(architecture): update module structure
