@@ -40,7 +40,7 @@ export function AppNavbar({ userName }: AppNavbarProps) {
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/workouts"
-            className="shrink-0 font-semibold tracking-tight"
+            className="text-primary shrink-0 font-semibold tracking-tight"
           >
             weightzz
           </Link>
@@ -59,8 +59,8 @@ export function AppNavbar({ userName }: AppNavbarProps) {
                   className={cn(
                     "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                     active
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                      ? "bg-primary/15 text-primary"
+                      : "text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground",
                   )}
                 >
                   {item.label}
