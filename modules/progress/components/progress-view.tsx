@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { UserExerciseSummary } from "@/modules/exercises/services/exercise.service";
 import { getExerciseProgressAction } from "@/modules/progress/actions/progress.actions";
+import { ProgressChart } from "@/modules/progress/components/progress-chart";
 import { ProgressHistoryTable } from "@/modules/progress/components/progress-history-table";
 import type { ExerciseProgressView } from "@/modules/progress/services/progress.service";
 
@@ -117,7 +118,12 @@ export function ProgressView({
         <p className="text-muted-foreground text-sm">Carregando progressão...</p>
       ) : null}
 
-      {progress ? <ProgressHistoryTable progress={progress} /> : null}
+      {progress ? (
+        <div className="flex w-full flex-col gap-6">
+          <ProgressChart history={progress.history} />
+          <ProgressHistoryTable progress={progress} />
+        </div>
+      ) : null}
     </div>
   );
 }

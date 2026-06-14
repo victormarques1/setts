@@ -4,19 +4,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { formatProgressDate } from "@/modules/progress/lib/format-progress-date";
 import type { ExerciseProgressView } from "@/modules/progress/services/progress.service";
 
 type ProgressHistoryTableProps = {
   progress: ExerciseProgressView;
 };
-
-function formatProgressDate(date: string) {
-  const [year, month, day] = date.split("-").map(Number);
-
-  return new Intl.DateTimeFormat("pt-BR").format(
-    new Date(year, month - 1, day),
-  );
-}
 
 export function ProgressHistoryTable({ progress }: ProgressHistoryTableProps) {
   if (progress.history.length === 0) {
