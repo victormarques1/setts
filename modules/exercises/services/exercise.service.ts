@@ -14,7 +14,23 @@ export class WorkoutNotFoundError extends Error {
   }
 }
 
+export type UserExerciseSummary = {
+  id: string;
+  name: string;
+  workoutName: string;
+};
+
 export const exerciseService = {
+  async listByUserId(userId: string): Promise<UserExerciseSummary[]> {
+    const exercises = await exerciseRepository.findByUserId(userId);
+
+    return exercises.map((exercise) => ({
+      id: exercise.id,
+      name: exercise.name,
+      workoutName: exercise.workout.name,
+    }));
+  },
+
   listByWorkoutId(workoutId: string) {
     return exerciseRepository.findByWorkoutId(workoutId);
   },

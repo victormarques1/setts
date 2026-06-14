@@ -5,6 +5,7 @@ import {
   actionSuccess,
   type ActionResult,
 } from "@/lib/action-result";
+import { getCurrentUserId } from "@/lib/current-user";
 import {
   ExerciseNotFoundError,
   progressService,
@@ -15,7 +16,11 @@ export async function getExerciseProgressAction(
   exerciseId: string,
 ): Promise<ActionResult<ExerciseProgressView>> {
   try {
-    const progress = await progressService.getExerciseProgress(exerciseId);
+    const userId = await getCurrentUserId();
+    const progress = await progressService.getExerciseProgress(
+      exerciseId,
+      userId,
+    );
     return actionSuccess(progress);
   } catch (error) {
     if (error instanceof ExerciseNotFoundError) {

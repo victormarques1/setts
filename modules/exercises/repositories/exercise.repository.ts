@@ -15,6 +15,29 @@ export const exerciseRepository = {
     });
   },
 
+  findByIdForUser(exerciseId: string, userId: string) {
+    return prisma.exercise.findFirst({
+      where: {
+        id: exerciseId,
+        workout: { userId },
+      },
+    });
+  },
+
+  findByUserId(userId: string) {
+    return prisma.exercise.findMany({
+      where: { workout: { userId } },
+      orderBy: [{ workout: { name: "asc" } }, { name: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        workout: {
+          select: { name: true },
+        },
+      },
+    });
+  },
+
   findByIdForWorkout(exerciseId: string, workoutId: string) {
     return prisma.exercise.findFirst({
       where: { id: exerciseId, workoutId },

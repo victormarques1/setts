@@ -25,6 +25,12 @@ const navItems: NavItem[] = [
     isActive: (pathname) =>
       pathname === "/history" || pathname.startsWith("/history/"),
   },
+  {
+    href: "/progress",
+    label: "Progressão",
+    isActive: (pathname) =>
+      pathname === "/progress" || pathname.startsWith("/progress/"),
+  },
 ];
 
 type AppNavbarProps = {

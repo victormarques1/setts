@@ -20,10 +20,16 @@ export type ExerciseProgressView = {
 };
 
 export const progressService = {
-  async getExerciseProgress(exerciseId: string): Promise<ExerciseProgressView> {
+  async getExerciseProgress(
+    exerciseId: string,
+    userId: string,
+  ): Promise<ExerciseProgressView> {
     exerciseProgressSchema.parse({ exerciseId });
 
-    const exercise = await exerciseRepository.findById(exerciseId);
+    const exercise = await exerciseRepository.findByIdForUser(
+      exerciseId,
+      userId,
+    );
 
     if (!exercise) {
       throw new ExerciseNotFoundError();
