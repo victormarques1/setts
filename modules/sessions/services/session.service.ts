@@ -100,7 +100,7 @@ export const sessionService = {
       throw new SessionNotFoundError();
     }
 
-    if (session.status !== WorkoutSessionStatus.IN_PROGRESS) {
+    if (session.status !== WorkoutSessionStatus.ACTIVE) {
       throw new SessionNotActiveError();
     }
 
@@ -142,7 +142,7 @@ export const sessionService = {
       throw new SessionNotFoundError();
     }
 
-    if (session.status !== WorkoutSessionStatus.IN_PROGRESS) {
+    if (session.status !== WorkoutSessionStatus.ACTIVE) {
       throw new SessionNotActiveError();
     }
 

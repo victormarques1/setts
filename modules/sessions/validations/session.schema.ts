@@ -8,6 +8,10 @@ export const completeSessionSchema = z.object({
   sessionId: z.string().min(1),
 });
 
+export const cancelSessionSchema = z.object({
+  sessionId: z.string().min(1),
+});
+
 export const createSetRecordFormSchema = z.object({
   weight: z.coerce
     .number({ error: "Peso é obrigatório." })
@@ -36,6 +40,7 @@ export const deleteSetRecordSchema = z.object({
 
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
 export type CompleteSessionInput = z.infer<typeof completeSessionSchema>;
+export type CancelSessionInput = z.infer<typeof cancelSessionSchema>;
 export type CreateSetRecordFormInput = z.input<typeof createSetRecordFormSchema>;
 export type CreateSetRecordInput = z.infer<typeof createSetRecordSchema>;
 export type UpdateSetRecordFormInput = z.input<typeof updateSetRecordFormSchema>;

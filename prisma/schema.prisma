@@ -44,8 +44,9 @@ model Exercise {
 model WorkoutSession {
   id          String               @id @default(cuid())
   workoutId   String
-  status      WorkoutSessionStatus @default(IN_PROGRESS)
+  status      WorkoutSessionStatus @default(ACTIVE)
   performedAt DateTime?
+  canceledAt  DateTime?
   workout     Workout              @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   setRecords  SetRecord[]
 
@@ -55,8 +56,9 @@ model WorkoutSession {
 }
 
 enum WorkoutSessionStatus {
-  IN_PROGRESS
+  ACTIVE
   COMPLETED
+  CANCELED
 }
 
 model SetRecord {

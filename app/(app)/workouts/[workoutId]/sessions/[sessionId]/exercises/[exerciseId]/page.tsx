@@ -35,6 +35,10 @@ export default async function ExerciseLoggerPage({
     notFound();
   }
 
+  if (session.status === WorkoutSessionStatus.CANCELED) {
+    notFound();
+  }
+
   const exercise = await exerciseService.getByIdForWorkout(
     exerciseId,
     workoutId,
@@ -56,7 +60,7 @@ export default async function ExerciseLoggerPage({
     sets.length > 0
       ? { weight: sets[sets.length - 1].weight, reps: sets[sets.length - 1].reps }
       : null;
-  const isActive = session.status === WorkoutSessionStatus.IN_PROGRESS;
+  const isActive = session.status === WorkoutSessionStatus.ACTIVE;
 
   return (
     <div className={isActive ? "page-shell page-shell-sticky-form" : "page-shell"}>

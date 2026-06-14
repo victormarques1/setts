@@ -24,6 +24,10 @@ import {
   updateSetRecordService,
 } from "@/modules/sessions/services/update-set-record.service";
 import { deleteSetRecordService } from "@/modules/sessions/services/delete-set-record.service";
+import {
+  SessionNotCancelableError,
+  cancelWorkoutSessionService,
+} from "@/modules/sessions/services/cancel-workout-session.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
 type WorkoutSessionWithSets = WorkoutSession & { setRecords: SetRecord[] };
@@ -121,6 +125,31 @@ export async function completeSessionAction(
     }
 
     return actionError("Não foi possível finalizar o treino.");
+  }
+}
+
+export async function cancelWorkoutSessionAction(
+  workoutId: string,
+  sessionId: string,
+): Promise<ActionResult<WorkoutSession>> {
+  try {
+    const userId = await getCurrentUserId();
+    const session = await cancelWorkoutSessionService.cancel(sessionId, userId);
+    revalidatePath(`/workouts/${workoutId}`);
+    revalidatePath(getSessionPath(workoutId, sessionId));
+    revalidatePath("/history");
+    revalidatePath("/progress");
+    return actionSuccess(session);
+  } catch (error) {
+    if (error instanceof SessionNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof SessionNotCancelableError) {
+      return actionError(error.message);
+    }
+
+    return actionError("Não foi possível cancelar a sessão.");
   }
 }
 

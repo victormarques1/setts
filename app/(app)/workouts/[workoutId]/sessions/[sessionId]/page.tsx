@@ -36,8 +36,12 @@ export default async function SessionPage({ params }: SessionPageProps) {
     notFound();
   }
 
+  if (session.status === WorkoutSessionStatus.CANCELED) {
+    notFound();
+  }
+
   const exercises = await exerciseService.listByWorkoutId(workoutId);
-  const isActive = session.status === WorkoutSessionStatus.IN_PROGRESS;
+  const isActive = session.status === WorkoutSessionStatus.ACTIVE;
 
   const setCountByExercise = session.setRecords.reduce<Record<string, number>>(
     (counts, set) => {

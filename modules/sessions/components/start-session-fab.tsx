@@ -10,18 +10,14 @@ import { startSessionAction } from "@/modules/sessions/actions/session.actions";
 
 type StartSessionFabProps = {
   workoutId: string;
-  hasActiveSession: boolean;
 };
 
-export function StartSessionFab({
-  workoutId,
-  hasActiveSession,
-}: StartSessionFabProps) {
+export function StartSessionFab({ workoutId }: StartSessionFabProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const label = hasActiveSession ? "Continuar treino" : "Iniciar treino";
+  const label = "Iniciar treino";
 
   function handleStart() {
     setError(null);

@@ -35,7 +35,7 @@ export const sessionRepository = {
     return prisma.workoutSession.findFirst({
       where: {
         workoutId,
-        status: WorkoutSessionStatus.IN_PROGRESS,
+        status: WorkoutSessionStatus.ACTIVE,
         workout: { userId, deletedAt: null },
       },
       include: { setRecords: true },
@@ -62,7 +62,7 @@ export const sessionRepository = {
     return prisma.workoutSession.create({
       data: {
         workoutId: data.workoutId,
-        status: WorkoutSessionStatus.IN_PROGRESS,
+        status: WorkoutSessionStatus.ACTIVE,
       },
     });
   },
@@ -73,6 +73,17 @@ export const sessionRepository = {
       data: {
         status: WorkoutSessionStatus.COMPLETED,
         performedAt,
+      },
+      include: { setRecords: true },
+    });
+  },
+
+  cancel(id: string, canceledAt: Date) {
+    return prisma.workoutSession.update({
+      where: { id },
+      data: {
+        status: WorkoutSessionStatus.CANCELED,
+        canceledAt,
       },
       include: { setRecords: true },
     });

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
 import { ExerciseList } from "@/modules/exercises/components/exercise-list";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
+import { ActiveSessionBanner } from "@/modules/sessions/components/active-session-banner";
 import { StartSessionButton } from "@/modules/sessions/components/start-session-button";
 import { StartSessionFab } from "@/modules/sessions/components/start-session-fab";
 import { sessionService } from "@/modules/sessions/services/session.service";
@@ -50,11 +51,8 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
             </p>
           </div>
           <div className="hidden w-full flex-col gap-2 sm:flex sm:w-auto sm:items-end">
-            {exercises.length > 0 ? (
-              <StartSessionButton
-                workoutId={workoutId}
-                hasActiveSession={activeSession !== null}
-              />
+            {exercises.length > 0 && !activeSession ? (
+              <StartSessionButton workoutId={workoutId} />
             ) : null}
             {exercises.length > 0 ? (
               <Button
@@ -71,13 +69,18 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
           </div>
         </div>
       </div>
+      {activeSession ? (
+        <ActiveSessionBanner
+          workoutId={workoutId}
+          sessionId={activeSession.id}
+        />
+      ) : null}
       <ExerciseList workoutId={workoutId} exercises={exercises} />
       {exercises.length > 0 ? (
         <>
-          <StartSessionFab
-            workoutId={workoutId}
-            hasActiveSession={activeSession !== null}
-          />
+          {!activeSession ? (
+            <StartSessionFab workoutId={workoutId} />
+          ) : null}
           <div className="flex flex-col gap-2 md:hidden">
             <Button
               className="w-full"
