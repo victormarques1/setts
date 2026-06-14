@@ -19,7 +19,11 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
             evolução.
           </p>
         </div>
-        <Button render={<Link href="/workouts/new" />} nativeButton={false}>
+        <Button
+          variant="outline"
+          render={<Link href="/workouts/new" />}
+          nativeButton={false}
+        >
           Criar treino
         </Button>
       </div>
@@ -27,10 +31,20 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
   }
 
   return (
-    <ul className="flex w-full flex-col gap-2.5 px-0.5">
-      {workouts.map((workout) => (
-        <WorkoutListItem key={workout.id} workout={workout} />
-      ))}
-    </ul>
+    <div className="flex w-full flex-col gap-4">
+      <ul className="flex w-full flex-col gap-2.5 px-0.5">
+        {workouts.map((workout) => (
+          <WorkoutListItem key={workout.id} workout={workout} />
+        ))}
+      </ul>
+      <Button
+        variant="outline"
+        className="w-full"
+        render={<Link href="/workouts/new" />}
+        nativeButton={false}
+      >
+        Novo treino
+      </Button>
+    </div>
   );
 }
