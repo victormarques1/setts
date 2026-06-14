@@ -192,13 +192,17 @@
 
   .list-card,
   .list-card-interactive {
-    @apply flex flex-col rounded-2xl border border-border/70 bg-card shadow-[0_1px_0_oklch(1_0_0/4%)_inset,0_4px_16px_-4px_oklch(0_0_0/35%)];
-    @apply transition-[background-color,box-shadow,border-color] duration-200;
+    @apply flex flex-col rounded-2xl border border-border/70 bg-card shadow-[0_4px_16px_-4px_oklch(0_0_0/35%)];
+    @apply transition-[background-color,box-shadow] duration-200;
   }
 
   .list-card-interactive {
-    @apply active:scale-[0.99];
-    @apply hover:border-primary/25 hover:bg-surface-elevated hover:shadow-[0_1px_0_oklch(1_0_0/5%)_inset,0_8px_24px_-6px_oklch(0_0_0/45%)];
+    @apply hover:bg-surface-elevated hover:shadow-[0_0_0_1px_oklch(0.74_0.19_48/0.4),0_4px_16px_-4px_oklch(0_0_0/38%)];
+  }
+
+  .group:hover .list-card-interactive,
+  .group:focus-visible .list-card-interactive {
+    @apply bg-surface-elevated shadow-[0_0_0_1px_oklch(0.74_0.19_48/0.4),0_4px_16px_-4px_oklch(0_0_0/38%)];
   }
 
   .stat-card {

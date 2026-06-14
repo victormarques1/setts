@@ -4,20 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-xl border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-xl border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition-[background-color,box-shadow,color] duration-200 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-[0_1px_0_oklch(1_0_0/15%_inset,0_2px_8px_-2px_oklch(0.74_0.19_48/40%)] hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-[0_2px_8px_-2px_oklch(0.74_0.19_48/40%)] hover:bg-primary/92 hover:shadow-[0_0_0_1px_oklch(1_0_0/0.22),0_4px_12px_-2px_oklch(0.74_0.19_48/50%)] active:bg-primary/85",
         outline:
-          "border-border/80 bg-surface hover:border-primary/30 hover:bg-surface-elevated hover:text-foreground aria-expanded:bg-surface-elevated aria-expanded:text-foreground dark:bg-surface/60 dark:hover:bg-surface-elevated",
+          "border-border/80 bg-surface shadow-[0_2px_8px_-4px_oklch(0_0_0/30%)] hover:bg-surface-elevated hover:text-foreground hover:shadow-[0_0_0_1px_oklch(0.74_0.19_48/0.4),0_2px_8px_-4px_oklch(0_0_0/35%)] aria-expanded:bg-surface-elevated aria-expanded:text-foreground dark:bg-surface/60 dark:hover:bg-surface-elevated",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_6%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+          "bg-secondary text-secondary-foreground shadow-[0_2px_8px_-4px_oklch(0_0_0/25%)] hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_6%)] hover:shadow-[0_0_0_1px_oklch(1_0_0/0.1),0_2px_8px_-4px_oklch(0_0_0/30%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
           "hover:bg-muted/80 hover:text-foreground aria-expanded:bg-muted/80 aria-expanded:text-foreground",
         destructive:
-          "bg-destructive/12 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+          "bg-destructive/12 text-destructive hover:bg-destructive/20 hover:shadow-[0_0_0_1px_oklch(0.62_0.22_25/0.35)] focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

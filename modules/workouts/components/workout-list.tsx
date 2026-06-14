@@ -49,10 +49,13 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
   }
 
   return (
-    <ul className="flex w-full flex-col gap-2.5">
+    <ul className="flex w-full flex-col gap-2.5 px-0.5">
       {workouts.map((workout) => (
         <li key={workout.id}>
-          <Link href={`/workouts/${workout.id}`} className="block">
+          <Link
+            href={`/workouts/${workout.id}`}
+            className="group block rounded-2xl focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
             <div className="list-card-interactive px-4 py-3.5">
               <div className="flex min-h-11 items-center justify-between gap-3">
                 <div className="flex min-w-0 flex-col gap-1">

@@ -51,7 +51,7 @@ export function SessionExerciseList({
   );
 
   return (
-    <ul className="flex w-full flex-col gap-2.5">
+    <ul className="flex w-full flex-col gap-2.5 px-0.5">
       {exercises.map((exercise) => {
         const setCount = setCountByExercise[exercise.id] ?? 0;
         const setLabel =
@@ -65,7 +65,7 @@ export function SessionExerciseList({
           <li key={exercise.id}>
             <Link
               href={`/workouts/${workoutId}/sessions/${sessionId}/exercises/${exercise.id}`}
-              className="block"
+              className="group block rounded-2xl focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               <div className="list-card-interactive px-4 py-3.5">
                 <div className="flex min-h-11 items-center justify-between gap-3">
