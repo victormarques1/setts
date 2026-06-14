@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
+import { LogoutButton } from "@/modules/auth/components/logout-button";
 import { WorkoutList } from "@/modules/workouts/components/workout-list";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
@@ -18,24 +19,21 @@ export default async function WorkoutsPage() {
             Gerencie seus treinos e organize seus exercícios.
           </p>
         </div>
-        {workouts.length > 0 ? (
-          <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col items-end gap-2">
+          {workouts.length > 0 ? (
             <Button render={<Link href="/workouts/new" />} nativeButton={false}>
               Novo treino
             </Button>
-            <Button
-              variant="outline"
-              render={<Link href="/history" />}
-              nativeButton={false}
-            >
-              Histórico
-            </Button>
-          </div>
-        ) : (
-          <Button render={<Link href="/history" />} nativeButton={false} variant="outline">
+          ) : null}
+          <Button
+            variant="outline"
+            render={<Link href="/history" />}
+            nativeButton={false}
+          >
             Histórico
           </Button>
-        )}
+          <LogoutButton />
+        </div>
       </div>
       <WorkoutList workouts={workouts} />
     </div>

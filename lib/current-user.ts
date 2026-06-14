@@ -1,16 +1,16 @@
-import { prisma } from "@/lib/prisma";
-
-const DEMO_USER_EMAIL = "demo@weightzz.local";
+import { auth } from "@/lib/auth";
 
 export async function getCurrentUserId(): Promise<string> {
-  const user = await prisma.user.upsert({
-    where: { email: DEMO_USER_EMAIL },
-    update: {},
-    create: {
-      name: "Demo",
-      email: DEMO_USER_EMAIL,
-    },
-  });
+  const session = await auth();
 
-  return user.id;
+  if (!session?.user?.id) {
+    throw new Error("Usuário não autenticado.");
+  }
+
+  return session.user.id;
+}
+
+export async function getCurrentUser() {
+  const session = await auth();
+  return session?.user ?? null;
 }
