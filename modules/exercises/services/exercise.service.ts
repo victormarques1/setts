@@ -90,8 +90,4 @@ export const exerciseService = {
 
     return exerciseRepository.create(data);
   },
-
-  delete(id: string) {
-    return exerciseRepository.delete(id);
-  },
 };

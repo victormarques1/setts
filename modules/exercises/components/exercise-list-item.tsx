@@ -1,10 +1,11 @@
 "use client";
 
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { formatWeight } from "@/lib/format-weight";
+import { DeleteExerciseDialog } from "@/modules/exercises/components/delete-exercise-dialog";
 import { EditExerciseDialog } from "@/modules/exercises/components/edit-exercise-dialog";
 import type { ExerciseSummary } from "@/modules/exercises/services/exercise.service";
 
@@ -26,6 +27,7 @@ function formatLastLoad(lastLoad: ExerciseSummary["lastLoad"]) {
 
 export function ExerciseListItem({ workoutId, exercise }: ExerciseListItemProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const lastLoad = formatLastLoad(exercise.lastLoad);
 
   return (
@@ -69,6 +71,15 @@ export function ExerciseListItem({ workoutId, exercise }: ExerciseListItemProps)
               >
                 <Pencil aria-hidden="true" />
               </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Excluir ${exercise.name}`}
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <Trash2 aria-hidden="true" />
+              </Button>
             </div>
           </div>
         </div>
@@ -79,6 +90,14 @@ export function ExerciseListItem({ workoutId, exercise }: ExerciseListItemProps)
           exerciseId={exercise.id}
           exerciseName={exercise.name}
           onClose={() => setIsEditOpen(false)}
+        />
+      ) : null}
+      {isDeleteOpen ? (
+        <DeleteExerciseDialog
+          workoutId={workoutId}
+          exerciseId={exercise.id}
+          exerciseName={exercise.name}
+          onClose={() => setIsDeleteOpen(false)}
         />
       ) : null}
     </>

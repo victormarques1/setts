@@ -14,6 +14,7 @@ import {
   exerciseService,
   WorkoutNotFoundError,
 } from "@/modules/exercises/services/exercise.service";
+import { deleteExerciseService } from "@/modules/exercises/services/delete-exercise.service";
 import {
   ExerciseNotFoundError,
   updateExerciseService,
@@ -95,5 +96,32 @@ export async function updateExerciseAction(
     }
 
     return actionError("Não foi possível atualizar o exercício.");
+  }
+}
+
+export async function deleteExerciseAction(
+  workoutId: string,
+  exerciseId: string,
+): Promise<ActionResult<void>> {
+  try {
+    const userId = await getCurrentUserId();
+    await deleteExerciseService.delete({ id: exerciseId }, userId, workoutId);
+    revalidatePath(`/workouts/${workoutId}`);
+    revalidatePath("/progress");
+    return actionSuccess(undefined);
+  } catch (error) {
+    if (error instanceof WorkoutNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof ExerciseNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof z.ZodError) {
+      return actionError(error.issues[0]?.message ?? "Dados inválidos.");
+    }
+
+    return actionError("Não foi possível excluir o exercício.");
   }
 }
