@@ -2,17 +2,21 @@ import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { CreateWorkoutInput } from "@/modules/workouts/validations/workout.schema";
 
+const activeWorkoutFilter = {
+  deletedAt: null,
+} as const;
+
 export const workoutRepository = {
   findByUserId(userId: string) {
     return prisma.workout.findMany({
-      where: { userId },
+      where: { userId, ...activeWorkoutFilter },
       orderBy: { name: "asc" },
     });
   },
 
   findSummariesByUserId(userId: string) {
     return prisma.workout.findMany({
-      where: { userId },
+      where: { userId, ...activeWorkoutFilter },
       orderBy: { name: "asc" },
       select: {
         id: true,
@@ -34,14 +38,14 @@ export const workoutRepository = {
   },
 
   findById(id: string) {
-    return prisma.workout.findUnique({
-      where: { id },
+    return prisma.workout.findFirst({
+      where: { id, ...activeWorkoutFilter },
     });
   },
 
   findByIdForUser(id: string, userId: string) {
     return prisma.workout.findFirst({
-      where: { id, userId },
+      where: { id, userId, ...activeWorkoutFilter },
     });
   },
 
@@ -57,8 +61,9 @@ export const workoutRepository = {
   },
 
   delete(id: string) {
-    return prisma.workout.delete({
+    return prisma.workout.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
   },
 };

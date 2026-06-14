@@ -41,14 +41,14 @@ export const exerciseRepository = {
     return prisma.exercise.findFirst({
       where: {
         id: exerciseId,
-        workout: { userId },
+        workout: { userId, deletedAt: null },
       },
     });
   },
 
   findByUserId(userId: string) {
     return prisma.exercise.findMany({
-      where: { workout: { userId } },
+      where: { workout: { userId, deletedAt: null } },
       orderBy: [{ workout: { name: "asc" } }, { name: "asc" }],
       select: {
         id: true,

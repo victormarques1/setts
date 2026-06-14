@@ -39,8 +39,4 @@ export const workoutService = {
     const data = createWorkoutSchema.parse(input);
     return workoutRepository.create(data);
   },
-
-  delete(id: string) {
-    return workoutRepository.delete(id);
-  },
 };

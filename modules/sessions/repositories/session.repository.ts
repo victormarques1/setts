@@ -25,7 +25,7 @@ export const sessionRepository = {
     return prisma.workoutSession.findFirst({
       where: {
         id,
-        workout: { userId },
+        workout: { userId, deletedAt: null },
       },
       include: { setRecords: true },
     });
@@ -36,7 +36,7 @@ export const sessionRepository = {
       where: {
         workoutId,
         status: WorkoutSessionStatus.IN_PROGRESS,
-        workout: { userId },
+        workout: { userId, deletedAt: null },
       },
       include: { setRecords: true },
     });
@@ -47,7 +47,7 @@ export const sessionRepository = {
       where: {
         status: WorkoutSessionStatus.COMPLETED,
         performedAt: { not: null },
-        workout: { userId },
+        workout: { userId, deletedAt: null },
       },
       include: {
         workout: {

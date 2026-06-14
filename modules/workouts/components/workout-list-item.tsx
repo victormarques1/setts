@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Pencil } from "lucide-react";
+import { ChevronRight, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { DeleteWorkoutDialog } from "@/modules/workouts/components/delete-workout-dialog";
 import { EditWorkoutDialog } from "@/modules/workouts/components/edit-workout-dialog";
 import type { WorkoutSummary } from "@/modules/workouts/services/workout.service";
 
@@ -32,6 +33,7 @@ function formatLastSession(lastSessionAt: Date | null) {
 
 export function WorkoutListItem({ workout }: WorkoutListItemProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   return (
     <>
@@ -68,6 +70,15 @@ export function WorkoutListItem({ workout }: WorkoutListItemProps) {
               >
                 <Pencil aria-hidden="true" />
               </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Excluir ${workout.name}`}
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <Trash2 aria-hidden="true" />
+              </Button>
               <Link
                 href={`/workouts/${workout.id}`}
                 className="text-muted-foreground rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -84,6 +95,13 @@ export function WorkoutListItem({ workout }: WorkoutListItemProps) {
           workoutId={workout.id}
           workoutName={workout.name}
           onClose={() => setIsEditOpen(false)}
+        />
+      ) : null}
+      {isDeleteOpen ? (
+        <DeleteWorkoutDialog
+          workoutId={workout.id}
+          workoutName={workout.name}
+          onClose={() => setIsDeleteOpen(false)}
         />
       ) : null}
     </>

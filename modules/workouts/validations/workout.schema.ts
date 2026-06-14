@@ -26,7 +26,12 @@ export const updateWorkoutSchema = updateWorkoutFormSchema.extend({
   id: z.string().min(1),
 });
 
+export const deleteWorkoutSchema = z.object({
+  id: z.string().min(1),
+});
+
 export type CreateWorkoutFormInput = z.infer<typeof createWorkoutFormSchema>;
 export type CreateWorkoutInput = z.infer<typeof createWorkoutSchema>;
 export type UpdateWorkoutFormInput = z.infer<typeof updateWorkoutFormSchema>;
 export type UpdateWorkoutInput = z.infer<typeof updateWorkoutSchema>;
+export type DeleteWorkoutInput = z.infer<typeof deleteWorkoutSchema>;
