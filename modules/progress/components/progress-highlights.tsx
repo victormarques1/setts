@@ -44,6 +44,32 @@ function ProgressEvolutionBadge({ history }: ProgressEvolutionBadgeProps) {
   );
 }
 
+type ProgressMetricCardProps = {
+  title: string;
+  entry: { weight: number; reps: number } | null;
+};
+
+function ProgressMetricCard({ title, entry }: ProgressMetricCardProps) {
+  return (
+    <div className="progress-metric-card">
+      <p className="metric-hero-caption">{title}</p>
+      {entry ? (
+        <>
+          <p className="metric-hero-value mt-2">
+            {formatWeight(entry.weight)}
+            <span className="metric-hero-unit">kg</span>
+          </p>
+          <p className="text-muted-foreground mt-1.5 truncate text-xs">
+            {formatProgressSet(entry)}
+          </p>
+        </>
+      ) : (
+        <p className="metric-hero-value mt-2 text-muted-foreground">—</p>
+      )}
+    </div>
+  );
+}
+
 type ProgressHighlightsProps = {
   progress: ExerciseProgressView;
 };
@@ -55,47 +81,8 @@ function ProgressHighlights({ progress }: ProgressHighlightsProps) {
   return (
     <div className="flex w-full min-w-0 flex-col gap-3">
       <div className="grid min-w-0 grid-cols-2 gap-2.5">
-        <div className="stat-card min-w-0">
-          {bestEntry ? (
-            <>
-              <p className="metric-hero-value text-primary">
-                {formatWeight(bestEntry.weight)}
-                <span className="metric-hero-unit text-primary/75">kg</span>
-              </p>
-              <p className="metric-hero-caption mt-1">Recorde pessoal</p>
-              <p className="text-muted-foreground mt-1.5 truncate text-xs">
-                {formatProgressSet(bestEntry)}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="metric-hero-value text-muted-foreground">—</p>
-              <p className="metric-hero-caption mt-1">Recorde pessoal</p>
-            </>
-          )}
-        </div>
-
-        <div className="list-card min-w-0 px-4 py-3.5">
-          {latestEntry ? (
-            <>
-              <p className="metric-hero-value">
-                {formatWeight(latestEntry.weight)}
-                <span className="metric-hero-unit text-muted-foreground">
-                  kg
-                </span>
-              </p>
-              <p className="metric-hero-caption mt-1">Última carga</p>
-              <p className="text-muted-foreground mt-1.5 truncate text-xs">
-                {formatProgressSet(latestEntry)}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="metric-hero-value text-muted-foreground">—</p>
-              <p className="metric-hero-caption mt-1">Última carga</p>
-            </>
-          )}
-        </div>
+        <ProgressMetricCard title="Recorde pessoal" entry={bestEntry} />
+        <ProgressMetricCard title="Última carga" entry={latestEntry} />
       </div>
 
       <ProgressEvolutionBadge history={progress.history} />

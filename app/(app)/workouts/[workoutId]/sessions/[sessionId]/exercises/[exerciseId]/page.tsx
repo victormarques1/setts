@@ -5,6 +5,7 @@ import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
+import { CancelSessionButton } from "@/modules/sessions/components/cancel-session-button";
 import { SetLoggerForm } from "@/modules/sessions/components/set-logger-form";
 import { SetRecordList } from "@/modules/sessions/components/set-record-list";
 import { sessionService } from "@/modules/sessions/services/session.service";
@@ -75,18 +76,26 @@ export default async function ExerciseLoggerPage({
         >
           ← Voltar
         </Button>
-        <div className="flex flex-col gap-1">
-          <h1
-            className="page-title break-words"
-            title={exercise.name}
-          >
-            {exercise.name}
-          </h1>
-          <p className="page-subtitle">
-            {isActive
-              ? "Registre peso e repetições de cada série."
-              : "Visualização das séries registradas neste treino."}
-          </p>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <h1
+              className="page-title break-words"
+              title={exercise.name}
+            >
+              {exercise.name}
+            </h1>
+            <p className="page-subtitle">
+              {isActive
+                ? "Registre peso e repetições de cada série."
+                : "Visualização das séries registradas neste treino."}
+            </p>
+          </div>
+          {isActive ? (
+            <CancelSessionButton
+              workoutId={workoutId}
+              sessionId={sessionId}
+            />
+          ) : null}
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
+import { CancelSessionButton } from "@/modules/sessions/components/cancel-session-button";
 import { SessionActionBar } from "@/modules/sessions/components/session-action-bar";
 import { SessionExerciseList } from "@/modules/sessions/components/session-exercise-list";
 import { sessionService } from "@/modules/sessions/services/session.service";
@@ -58,36 +59,51 @@ export default async function SessionPage({ params }: SessionPageProps) {
   return (
     <div className={isActive ? "page-shell page-shell-sticky-bar" : "page-shell"}>
       <div className="flex flex-col gap-4">
-        <Button
-          variant="ghost"
-          className="back-link"
-          render={
-            <Link
-              href={
-                session.status === WorkoutSessionStatus.COMPLETED
-                  ? "/history"
-                  : `/workouts/${workoutId}`
-              }
-            />
-          }
-          nativeButton={false}
-        >
-          ← Voltar
-        </Button>
-        <div className="flex flex-col gap-1">
-          <h1
-            className="page-title break-words"
-            title={workout.name}
+        <div className="flex flex-col gap-0.5">
+          <Button
+            variant="ghost"
+            className="back-link"
+            render={
+              <Link
+                href={
+                  session.status === WorkoutSessionStatus.COMPLETED
+                    ? "/history"
+                    : `/workouts/${workoutId}`
+                }
+              />
+            }
+            nativeButton={false}
           >
-            {workout.name}
-          </h1>
-          <p className="page-subtitle">
-            {isActive
-              ? "Treino em andamento. Suas séries ficam salvas ao sair e voltar."
-              : session.performedAt
-                ? `Finalizado em ${formatSessionDate(session.performedAt)}`
-                : "Treino finalizado"}
-          </p>
+            ← Voltar
+          </Button>
+          {isActive ? (
+            <p className="back-link-hint">
+              Suas séries ficam salvas ao sair e voltar.
+            </p>
+          ) : null}
+        </div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <h1
+              className="page-title break-words"
+              title={workout.name}
+            >
+              {workout.name}
+            </h1>
+            <p className="page-subtitle">
+              {isActive
+                ? "Treino em andamento."
+                : session.performedAt
+                  ? `Finalizado em ${formatSessionDate(session.performedAt)}`
+                  : "Treino finalizado"}
+            </p>
+          </div>
+          {isActive ? (
+            <CancelSessionButton
+              workoutId={workoutId}
+              sessionId={sessionId}
+            />
+          ) : null}
         </div>
       </div>
       <SessionExerciseList

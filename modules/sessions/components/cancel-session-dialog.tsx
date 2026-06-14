@@ -68,8 +68,7 @@ export function CancelSessionDialog({
           <div className="flex flex-col gap-1.5">
             <DialogTitle>Cancelar sessão</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja cancelar esta sessão? Os registros feitos
-              nela não serão considerados na sua evolução.
+              Tem certeza que deseja cancelar? Todo o progresso será perdido.
             </DialogDescription>
           </div>
 

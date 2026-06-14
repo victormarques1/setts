@@ -4,6 +4,7 @@ import { Dumbbell, History, TrendingUp, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useAppChrome } from "@/components/layout/app-chrome-context";
 import { AppLogo } from "@/components/layout/app-logo";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/modules/auth/components/logout-button";
@@ -104,6 +105,7 @@ function NavLink({
 
 export function AppNavbar({ userName }: AppNavbarProps) {
   const pathname = usePathname();
+  const { hideBottomNav } = useAppChrome();
 
   return (
     <>
@@ -136,21 +138,23 @@ export function AppNavbar({ userName }: AppNavbarProps) {
         </div>
       </header>
 
-      <nav
-        aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/75 md:hidden"
-      >
-        <div className="shell-x mx-auto flex max-w-2xl items-stretch pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.href}
-              item={item}
-              pathname={pathname}
-              variant="bottom"
-            />
-          ))}
-        </div>
-      </nav>
+      {hideBottomNav ? null : (
+        <nav
+          aria-label="Navegação principal"
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/75 md:hidden"
+        >
+          <div className="shell-x mx-auto flex max-w-2xl items-stretch pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.href}
+                item={item}
+                pathname={pathname}
+                variant="bottom"
+              />
+            ))}
+          </div>
+        </nav>
+      )}
     </>
   );
 }

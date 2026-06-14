@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatWeight } from "@/lib/format-weight";
@@ -34,68 +33,57 @@ function StepperField({
   id,
   label,
   value,
-  onChange,
   onStep,
-  inputMode,
-  step,
-  min,
   disabled,
   hasError,
-  autoFocus,
 }: {
   id: string;
   label: string;
   value: string;
-  onChange: (value: string) => void;
   onStep: (delta: number) => void;
-  inputMode: "decimal" | "numeric";
-  step: string;
-  min: string;
   disabled: boolean;
   hasError: boolean;
-  autoFocus?: boolean;
 }) {
+  const displayValue = value || "—";
+
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={id}>{label}</Label>
-      <div className="flex items-center gap-2">
+      <Label id={`${id}-label`}>{label}</Label>
+      <div
+        className="flex items-center justify-center gap-1"
+        role="group"
+        aria-labelledby={`${id}-label`}
+      >
         <Button
           type="button"
           variant="outline"
-          size="icon"
-          className="shrink-0 rounded-xl"
+          className="size-12 min-h-12 min-w-12 shrink-0 rounded-full"
           onClick={() => onStep(-1)}
           disabled={disabled}
           aria-label={`Diminuir ${label.toLowerCase()}`}
         >
-          <Minus className="size-4" />
+          <Minus className="size-5" aria-hidden="true" />
         </Button>
-        <Input
+        <span
           id={id}
-          name={id}
-          type="number"
-          inputMode={inputMode}
-          step={step}
-          min={min}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder="0"
-          required
-          disabled={disabled}
-          autoFocus={autoFocus}
+          aria-live="polite"
           aria-invalid={hasError ? true : undefined}
-          className="text-center text-lg font-bold tabular-nums"
-        />
+          className={cn(
+            "min-w-[5.5rem] px-2 text-center text-4xl font-bold tabular-nums tracking-tight",
+            value ? "text-foreground" : "text-muted-foreground",
+          )}
+        >
+          {displayValue}
+        </span>
         <Button
           type="button"
           variant="outline"
-          size="icon"
-          className="shrink-0 rounded-xl"
+          className="size-12 min-h-12 min-w-12 shrink-0 rounded-full"
           onClick={() => onStep(1)}
           disabled={disabled}
           aria-label={`Aumentar ${label.toLowerCase()}`}
         >
-          <Plus className="size-4" />
+          <Plus className="size-5" aria-hidden="true" />
         </Button>
       </div>
     </div>
@@ -205,24 +193,15 @@ export function SetLoggerForm({
               id="weight"
               label="Peso (kg)"
               value={weight}
-              onChange={setWeight}
               onStep={adjustWeight}
-              inputMode="decimal"
-              step="0.5"
-              min="0"
               disabled={isPending}
               hasError={error !== null}
-              autoFocus
             />
             <StepperField
               id="reps"
               label="Repetições"
               value={reps}
-              onChange={setReps}
               onStep={adjustReps}
-              inputMode="numeric"
-              step="1"
-              min="1"
               disabled={isPending}
               hasError={error !== null}
             />
