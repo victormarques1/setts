@@ -13,18 +13,27 @@ import {
 import { formatProgressDate } from "@/modules/progress/lib/format-progress-date";
 import { formatProgressSet } from "@/modules/progress/lib/format-progress-set";
 import type { ExerciseProgressHistoryPoint } from "@/modules/progress/services/progress.service";
+import { cn } from "@/lib/utils";
 
 const MIN_CHART_POINTS = 3;
 
 type ProgressChartProps = {
   history: ExerciseProgressHistoryPoint[];
+  flexible?: boolean;
 };
 
-export function ProgressChart({ history }: ProgressChartProps) {
+function getChartContainerClass(flexible: boolean) {
+  return cn(
+    "w-full min-w-0",
+    flexible ? "flex min-h-[11rem] flex-1 flex-col sm:min-h-[13rem]" : "h-44 sm:h-52",
+  );
+}
+
+export function ProgressChart({ history, flexible = false }: ProgressChartProps) {
   if (history.length === 0) {
     return (
       <div
-        className="empty-state-card h-44 w-full min-w-0 sm:h-52"
+        className={cn("empty-state-card", getChartContainerClass(flexible))}
         aria-label="Gráfico de evolução sem dados"
       >
         <p className="empty-state-description">
@@ -37,7 +46,7 @@ export function ProgressChart({ history }: ProgressChartProps) {
   if (history.length < MIN_CHART_POINTS) {
     return (
       <div
-        className="empty-state-card h-44 w-full min-w-0 sm:h-52"
+        className={cn("empty-state-card", getChartContainerClass(flexible))}
         aria-label="Gráfico de evolução indisponível"
       >
         <p className="empty-state-description">
@@ -54,7 +63,7 @@ export function ProgressChart({ history }: ProgressChartProps) {
   }));
 
   return (
-    <div className="list-card h-44 w-full min-w-0 p-3 sm:h-52 sm:p-4">
+    <div className={cn("list-card p-3 sm:p-4", getChartContainerClass(flexible))}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}

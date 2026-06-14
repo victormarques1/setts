@@ -60,6 +60,31 @@ export const exerciseRepository = {
     });
   },
 
+  findRecentSetRecordsByUserId(userId: string) {
+    return prisma.setRecord.findMany({
+      where: {
+        exercise: { workout: { userId, deletedAt: null } },
+        session: {
+          status: WorkoutSessionStatus.COMPLETED,
+          performedAt: { not: null },
+        },
+      },
+      orderBy: [
+        { session: { performedAt: "desc" } },
+        { setNumber: "desc" },
+      ],
+      select: {
+        exerciseId: true,
+        weight: true,
+        reps: true,
+        sessionId: true,
+        session: {
+          select: { performedAt: true },
+        },
+      },
+    });
+  },
+
   findByIdForWorkout(exerciseId: string, workoutId: string) {
     return prisma.exercise.findFirst({
       where: { id: exerciseId, workoutId },

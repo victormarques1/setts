@@ -1,44 +1,80 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import type { UserExerciseSummary } from "@/modules/exercises/services/exercise.service";
 import { getExerciseProgressAction } from "@/modules/progress/actions/progress.actions";
-import { ProgressChart } from "@/modules/progress/components/progress-chart";
-import { ProgressHighlights } from "@/modules/progress/components/progress-highlights";
-import { ProgressHistoryTimeline } from "@/modules/progress/components/progress-history-timeline";
+import { ProgressExerciseDetail } from "@/modules/progress/components/progress-exercise-detail";
+import { ProgressExerciseList } from "@/modules/progress/components/progress-exercise-list";
+import { ProgressSearchBar } from "@/modules/progress/components/progress-search-bar";
+import { ProgressWorkoutChips } from "@/modules/progress/components/progress-workout-chips";
 import type { ExerciseProgressView } from "@/modules/progress/services/progress.service";
 
 type ProgressViewProps = {
   exercises: UserExerciseSummary[];
-  initialExerciseId?: string;
-  initialProgress: ExerciseProgressView | null;
 };
 
-export function ProgressView({
-  exercises,
-  initialExerciseId,
-  initialProgress,
-}: ProgressViewProps) {
-  const [selectedExerciseId, setSelectedExerciseId] = useState(
-    initialExerciseId ?? "",
-  );
-  const [progress, setProgress] = useState<ExerciseProgressView | null>(
-    initialProgress,
-  );
+function getUniqueWorkoutNames(exercises: UserExerciseSummary[]) {
+  const names: string[] = [];
+  const seen = new Set<string>();
+
+  for (const exercise of exercises) {
+    if (seen.has(exercise.workoutName)) {
+      continue;
+    }
+
+    seen.add(exercise.workoutName);
+    names.push(exercise.workoutName);
+  }
+
+  return names;
+}
+
+export function ProgressView({ exercises }: ProgressViewProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
+  const [selectedExercise, setSelectedExercise] =
+    useState<UserExerciseSummary | null>(null);
+  const [progress, setProgress] = useState<ExerciseProgressView | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const workoutNames = useMemo(
+    () => getUniqueWorkoutNames(exercises),
+    [exercises],
+  );
+
+  const filteredExercises = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return exercises.filter((exercise) => {
+      if (selectedWorkout && exercise.workoutName !== selectedWorkout) {
+        return false;
+      }
+
+      if (
+        normalizedQuery &&
+        !exercise.name.toLowerCase().includes(normalizedQuery)
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [exercises, searchQuery, selectedWorkout]);
+
   const handleSelectExercise = (exerciseId: string) => {
-    if (!exerciseId || exerciseId === selectedExerciseId) {
+    const exercise = exercises.find((item) => item.id === exerciseId);
+
+    if (!exercise || exercise.id === selectedExercise?.id) {
       return;
     }
 
-    setSelectedExerciseId(exerciseId);
+    setSelectedExercise(exercise);
     setErrorMessage(null);
+    setProgress(null);
 
     startTransition(async () => {
       const result = await getExerciseProgressAction(exerciseId);
@@ -51,6 +87,12 @@ export function ProgressView({
 
       setProgress(result.data);
     });
+  };
+
+  const handleBack = () => {
+    setSelectedExercise(null);
+    setProgress(null);
+    setErrorMessage(null);
   };
 
   if (exercises.length === 0) {
@@ -70,57 +112,43 @@ export function ProgressView({
     );
   }
 
-  const selectedExercise = exercises.find(
-    (exercise) => exercise.id === selectedExerciseId,
-  );
+  if (selectedExercise) {
+    return (
+      <ProgressExerciseDetail
+        exerciseName={selectedExercise.name}
+        workoutName={selectedExercise.workoutName}
+        progress={progress}
+        isPending={isPending}
+        errorMessage={errorMessage}
+        onBack={handleBack}
+      />
+    );
+  }
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="progress-exercise">Exercício</Label>
-        <select
-          id="progress-exercise"
-          value={selectedExerciseId}
-          onChange={(event) => handleSelectExercise(event.target.value)}
-          disabled={isPending}
-          aria-busy={isPending}
-          className="input-select"
-        >
-          {exercises.map((exercise) => (
-            <option key={exercise.id} value={exercise.id}>
-              {exercise.name} — {exercise.workoutName}
-            </option>
-          ))}
-        </select>
-        {selectedExercise ? (
-          <p className="text-muted-foreground text-xs">
-            Treino: {selectedExercise.workoutName}
-          </p>
-        ) : null}
+    <div className="flex w-full min-w-0 flex-col gap-5">
+      <div className="flex flex-col gap-1">
+        <h1 className="page-title">Progressão</h1>
+        <p className="page-subtitle">
+          Veja sua última carga, recorde e evolução em cada exercício.
+        </p>
       </div>
 
-      {errorMessage ? (
-        <div
-          className="rounded-2xl border border-destructive/30 bg-destructive/8 px-4 py-3 text-sm text-destructive"
-          role="alert"
-        >
-          {errorMessage}
-        </div>
-      ) : null}
+      <div className="flex flex-col gap-3">
+        <ProgressSearchBar value={searchQuery} onChange={setSearchQuery} />
+        <ProgressWorkoutChips
+          workouts={workoutNames}
+          selectedWorkout={selectedWorkout}
+          onSelect={setSelectedWorkout}
+        />
+      </div>
 
-      {isPending ? (
-        <p className="text-muted-foreground text-sm" aria-live="polite">
-          Carregando progressão...
-        </p>
-      ) : null}
-
-      {progress ? (
-        <div className="flex w-full min-w-0 flex-col gap-5">
-          <ProgressHighlights progress={progress} />
-          <ProgressChart history={progress.history} />
-          <ProgressHistoryTimeline progress={progress} />
-        </div>
-      ) : null}
+      <ProgressExerciseList
+        exercises={filteredExercises}
+        selectedExerciseId=""
+        loadingExerciseId={null}
+        onSelectExercise={handleSelectExercise}
+      />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { buildExerciseLoadSummaries } from "@/modules/exercises/lib/build-exercise-load-summaries";
 import { exerciseRepository } from "@/modules/exercises/repositories/exercise.repository";
 import {
   createExerciseSchema,
@@ -16,6 +17,11 @@ export type UserExerciseSummary = {
   id: string;
   name: string;
   workoutName: string;
+  lastLoad: {
+    weight: number;
+    reps: number;
+  } | null;
+  trend: "up" | "down" | "same" | null;
 };
 
 export type ExerciseSummary = {
@@ -29,13 +35,24 @@ export type ExerciseSummary = {
 
 export const exerciseService = {
   async listByUserId(userId: string): Promise<UserExerciseSummary[]> {
-    const exercises = await exerciseRepository.findByUserId(userId);
+    const [exercises, setRecords] = await Promise.all([
+      exerciseRepository.findByUserId(userId),
+      exerciseRepository.findRecentSetRecordsByUserId(userId),
+    ]);
 
-    return exercises.map((exercise) => ({
-      id: exercise.id,
-      name: exercise.name,
-      workoutName: exercise.workout.name,
-    }));
+    const loadSummaries = buildExerciseLoadSummaries(setRecords);
+
+    return exercises.map((exercise) => {
+      const summary = loadSummaries.get(exercise.id);
+
+      return {
+        id: exercise.id,
+        name: exercise.name,
+        workoutName: exercise.workout.name,
+        lastLoad: summary?.lastLoad ?? null,
+        trend: summary?.trend ?? null,
+      };
+    });
   },
 
   listByWorkoutId(workoutId: string) {

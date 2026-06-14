@@ -270,6 +270,33 @@
     padding-right: 2.5rem;
   }
 
+  .search-input-wrapper {
+    @apply relative w-full;
+  }
+
+  .search-input {
+    @apply h-12 border-border/80 bg-surface pl-11 text-foreground placeholder:text-muted-foreground/80;
+  }
+
+  .filter-chips-scroll {
+    @apply flex gap-2 overflow-x-auto pb-1;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter-chips-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-chip {
+    @apply shrink-0 rounded-full border border-border/80 bg-transparent px-4 py-2.5 text-sm font-semibold tracking-tight text-muted-foreground transition-[background-color,border-color,color,box-shadow] duration-200;
+    @apply min-h-11 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
+  }
+
+  .filter-chip-active {
+    @apply border-primary bg-primary text-primary-foreground shadow-[0_2px_12px_-2px_oklch(0.74_0.19_48/45%)];
+  }
+
   .badge-pr {
     @apply rounded-md bg-primary/12 px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide text-primary;
   }
