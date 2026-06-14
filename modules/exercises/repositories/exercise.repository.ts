@@ -6,7 +6,7 @@ export const exerciseRepository = {
   findByWorkoutId(workoutId: string) {
     return prisma.exercise.findMany({
       where: { workoutId },
-      orderBy: { name: "asc" },
+      orderBy: { createdAt: "asc" },
     });
   },
 
