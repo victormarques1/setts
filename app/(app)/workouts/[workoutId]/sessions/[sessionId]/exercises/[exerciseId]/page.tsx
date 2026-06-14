@@ -71,14 +71,14 @@ export default async function ExerciseLoggerPage({
         >
           ← Voltar
         </Button>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <h1
-            className="text-2xl font-semibold tracking-tight break-words sm:text-3xl"
+            className="page-title break-words"
             title={exercise.name}
           >
             {exercise.name}
           </h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
+          <p className="page-subtitle">
             {isActive
               ? "Registre peso e repetições de cada série."
               : "Visualização das séries registradas neste treino."}

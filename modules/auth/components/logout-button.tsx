@@ -17,9 +17,11 @@ export function LogoutButton() {
   return (
     <Button
       type="button"
-      variant="outline"
+      variant="ghost"
+      className="touch-target"
       onClick={handleLogout}
       disabled={isPending}
+      aria-busy={isPending}
     >
       {isPending ? "Saindo..." : "Sair"}
     </Button>

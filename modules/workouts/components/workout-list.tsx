@@ -1,13 +1,7 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import type { WorkoutSummary } from "@/modules/workouts/services/workout.service";
 
 type WorkoutListProps = {
@@ -30,48 +24,62 @@ function formatLastSessionDate(date: Date) {
 
 function formatLastSession(lastSessionAt: Date | null) {
   if (!lastSessionAt) {
-    return "Nenhuma sessão realizada";
+    return "Sem sessões";
   }
 
-  return `Última sessão: ${formatLastSessionDate(lastSessionAt)}`;
+  return formatLastSessionDate(lastSessionAt);
 }
 
 export function WorkoutList({ workouts }: WorkoutListProps) {
   if (workouts.length === 0) {
     return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Nenhum treino cadastrado</CardTitle>
-          <CardDescription>
-            Crie seu primeiro treino para começar a registrar exercícios e
-            séries.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button render={<Link href="/workouts/new" />} nativeButton={false}>
-            Criar treino
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="empty-state-card w-full">
+        <div className="flex flex-col gap-1.5">
+          <p className="empty-state-title">Nenhum treino cadastrado</p>
+          <p className="empty-state-description">
+            Crie seu primeiro treino para começar a registrar cargas e ver sua
+            evolução.
+          </p>
+        </div>
+        <Button render={<Link href="/workouts/new" />} nativeButton={false}>
+          Criar treino
+        </Button>
+      </div>
     );
   }
 
   return (
-    <ul className="flex w-full flex-col gap-3">
+    <ul className="flex w-full flex-col gap-2.5">
       {workouts.map((workout) => (
         <li key={workout.id}>
           <Link href={`/workouts/${workout.id}`} className="block">
-            <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
-              <CardContent className="flex min-h-11 flex-col justify-center gap-1 py-0">
-                <span className="min-w-0 truncate font-medium" title={workout.name}>
-                  {workout.name}
-                </span>
-                <span className="text-muted-foreground text-sm">
-                  {formatExerciseCount(workout.exerciseCount)} ·{" "}
-                  {formatLastSession(workout.lastSessionAt)}
-                </span>
-              </CardContent>
-            </Card>
+            <div className="list-card-interactive px-4 py-3.5">
+              <div className="flex min-h-11 items-center justify-between gap-3">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <span
+                    className="min-w-0 truncate font-semibold tracking-tight"
+                    title={workout.name}
+                  >
+                    {workout.name}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
+                    {formatExerciseCount(workout.exerciseCount)}
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex flex-col items-end gap-0.5">
+                    <span className="metric-label">Última sessão</span>
+                    <span className="text-sm font-semibold tabular-nums">
+                      {formatLastSession(workout.lastSessionAt)}
+                    </span>
+                  </div>
+                  <ChevronRight
+                    className="text-muted-foreground size-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+            </div>
           </Link>
         </li>
       ))}

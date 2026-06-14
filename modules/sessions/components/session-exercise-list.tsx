@@ -1,13 +1,8 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import type { Exercise, SetRecord } from "@/app/generated/prisma/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 type SessionExerciseListProps = {
   workoutId: string;
@@ -26,14 +21,24 @@ export function SessionExerciseList({
 }: SessionExerciseListProps) {
   if (exercises.length === 0) {
     return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Nenhum exercício cadastrado</CardTitle>
-          <CardDescription>
-            Adicione exercícios ao treino antes de registrar séries.
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="empty-state-card w-full">
+        <div className="flex flex-col gap-1.5">
+          <p className="empty-state-title">Nenhum exercício cadastrado</p>
+          <p className="empty-state-description">
+            Adicione exercícios ao treino para começar a registrar séries.
+          </p>
+        </div>
+        {isActive ? (
+          <Button
+            render={
+              <Link href={`/workouts/${workoutId}/exercises/new`} />
+            }
+            nativeButton={false}
+          >
+            Adicionar exercício
+          </Button>
+        ) : null}
+      </div>
     );
   }
 
@@ -46,9 +51,15 @@ export function SessionExerciseList({
   );
 
   return (
-    <ul className="flex w-full flex-col gap-3">
+    <ul className="flex w-full flex-col gap-2.5">
       {exercises.map((exercise) => {
         const setCount = setCountByExercise[exercise.id] ?? 0;
+        const setLabel =
+          setCount === 0
+            ? isActive
+              ? "Registrar"
+              : "0"
+            : String(setCount);
 
         return (
           <li key={exercise.id}>
@@ -56,22 +67,34 @@ export function SessionExerciseList({
               href={`/workouts/${workoutId}/sessions/${sessionId}/exercises/${exercise.id}`}
               className="block"
             >
-              <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
-                <CardContent className="flex min-h-11 items-center justify-between gap-3 py-0">
-                  <span className="min-w-0 truncate font-medium" title={exercise.name}>
+              <div className="list-card-interactive px-4 py-3.5">
+                <div className="flex min-h-11 items-center justify-between gap-3">
+                  <span
+                    className="min-w-0 truncate font-semibold tracking-tight"
+                    title={exercise.name}
+                  >
                     {exercise.name}
                   </span>
-                  <span className="text-muted-foreground shrink-0 text-sm">
-                    {setCount === 0
-                      ? isActive
-                        ? "Registrar séries"
-                        : "Sem séries"
-                      : isActive
-                        ? `${setCount} série${setCount === 1 ? "" : "s"}`
-                        : `Ver ${setCount} série${setCount === 1 ? "" : "s"}`}
-                  </span>
-                </CardContent>
-              </Card>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex flex-col items-end gap-0.5">
+                      <span className="metric-label">Séries</span>
+                      <span
+                        className={
+                          setCount > 0
+                            ? "metric-value-primary text-base"
+                            : "text-muted-foreground text-sm font-semibold"
+                        }
+                      >
+                        {setLabel}
+                      </span>
+                    </div>
+                    <ChevronRight
+                      className="text-muted-foreground size-4 shrink-0"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+              </div>
             </Link>
           </li>
         );

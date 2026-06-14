@@ -70,14 +70,14 @@ export default async function SessionPage({ params }: SessionPageProps) {
         >
           ← Voltar
         </Button>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <h1
-            className="text-2xl font-semibold tracking-tight break-words sm:text-3xl"
+            className="page-title break-words"
             title={workout.name}
           >
             {workout.name}
           </h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
+          <p className="page-subtitle">
             {isActive
               ? "Treino em andamento. Suas séries ficam salvas ao sair e voltar."
               : session.performedAt

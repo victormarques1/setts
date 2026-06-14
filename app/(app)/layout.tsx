@@ -11,7 +11,7 @@ export default async function AppLayout({
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <AppNavbar userName={session?.user?.name} />
-      <div className="flex flex-1 flex-col pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+      <div className="flex flex-1 flex-col pb-[calc(4.25rem+env(safe-area-inset-bottom))] md:pb-0">
         {children}
       </div>
     </div>

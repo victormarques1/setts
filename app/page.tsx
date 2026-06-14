@@ -8,19 +8,28 @@ export default async function Home() {
   const session = await auth();
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center shell-x py-12 sm:py-24">
-      <main className="flex w-full max-w-lg flex-col items-center gap-6 text-center sm:gap-8">
-        <div className="flex flex-col gap-3">
+    <div className="flex flex-1 flex-col items-center justify-center shell-x py-10 sm:py-20">
+      <main className="flex w-full max-w-lg flex-col items-center gap-8 text-center">
+        <div className="flex flex-col items-center gap-4">
           <AppLogo size="lg" />
-          <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
-            Registre treinos, séries, carga e repetições. Acompanhe sua
-            progressão ao longo do tempo.
+          <p className="text-muted-foreground max-w-sm text-base leading-relaxed">
+            Registre cada série, acompanhe sua evolução e supere seus recordes
+            de carga.
           </p>
         </div>
         {session?.user ? (
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center">
             <Button className="w-full sm:w-auto" size="lg" render={<Link href="/workouts" />} nativeButton={false}>
               Meus treinos
+            </Button>
+            <Button
+              className="w-full sm:w-auto"
+              size="lg"
+              variant="outline"
+              render={<Link href="/progress" />}
+              nativeButton={false}
+            >
+              Progressão
             </Button>
             <Button
               className="w-full sm:w-auto"

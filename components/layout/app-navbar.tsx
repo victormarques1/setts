@@ -65,13 +65,22 @@ function NavLink({
         href={item.href}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex min-h-[3.25rem] flex-1 flex-col items-center justify-center gap-1 px-2 py-2 text-xs font-medium transition-colors",
+          "relative flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-1 px-2 py-2 text-xs font-semibold transition-colors nav-focus-ring rounded-lg",
           active
             ? "text-primary"
-            : "text-muted-foreground active:bg-accent/60",
+            : "text-muted-foreground active:text-foreground",
         )}
       >
-        <Icon className="size-5 shrink-0" aria-hidden={true} />
+        {active ? (
+          <span
+            className="absolute top-1.5 h-0.5 w-5 rounded-full bg-primary"
+            aria-hidden="true"
+          />
+        ) : null}
+        <Icon
+          className={cn("size-[1.375rem] shrink-0", active && "stroke-[2.5]")}
+          aria-hidden={true}
+        />
         <span className="truncate">{item.shortLabel}</span>
       </Link>
     );
@@ -82,10 +91,10 @@ function NavLink({
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "min-h-11 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+        "min-h-10 rounded-xl px-3.5 py-2 text-sm font-semibold transition-colors nav-focus-ring",
         active
-          ? "bg-primary/15 text-primary"
-          : "text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground",
+          ? "bg-primary/12 text-primary"
+          : "text-muted-foreground hover:bg-surface-elevated hover:text-foreground",
       )}
     >
       {item.label}
@@ -98,13 +107,13 @@ export function AppNavbar({ userName }: AppNavbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 pt-[env(safe-area-inset-top,0px)] backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
         <div className="shell-x mx-auto flex h-12 max-w-2xl items-center justify-between gap-3 sm:h-14">
           <AppLogo href="/workouts" />
 
           <nav
             aria-label="Navegação principal"
-            className="hidden items-center gap-1 md:flex"
+            className="hidden items-center gap-0.5 md:flex"
           >
             {navItems.map((item) => (
               <NavLink
@@ -118,7 +127,7 @@ export function AppNavbar({ userName }: AppNavbarProps) {
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {userName ? (
-              <span className="text-muted-foreground hidden max-w-32 truncate text-sm lg:inline">
+              <span className="text-muted-foreground hidden max-w-32 truncate text-sm font-medium lg:inline">
                 {userName}
               </span>
             ) : null}
@@ -129,9 +138,9 @@ export function AppNavbar({ userName }: AppNavbarProps) {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/75 md:hidden"
       >
-        <div className="shell-x mx-auto flex max-w-2xl items-stretch pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-1.5">
+        <div className="shell-x mx-auto flex max-w-2xl items-stretch pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1">
           {navItems.map((item) => (
             <NavLink
               key={item.href}

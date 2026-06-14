@@ -10,7 +10,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,9 +48,8 @@ export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full max-w-lg border-border/70">
       <CardHeader>
-        <CardTitle>Entrar</CardTitle>
         <CardDescription>
           Acesse sua conta para registrar treinos e acompanhar sua progressão.
         </CardDescription>

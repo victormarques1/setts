@@ -27,7 +27,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
   const activeSession = await sessionService.getActiveSession(workoutId, userId);
 
   return (
-    <div className="page-shell">
+    <div className={exercises.length > 0 ? "page-shell page-shell-sticky-fab" : "page-shell"}>
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"
@@ -38,14 +38,14 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
           ← Voltar
         </Button>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex min-w-0 flex-col gap-2">
+          <div className="flex min-w-0 flex-col gap-1">
             <h1
-              className="text-2xl font-semibold tracking-tight break-words sm:text-3xl"
+              className="page-title break-words"
               title={workout.name}
             >
               {workout.name}
             </h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
+            <p className="page-subtitle">
               Exercícios deste treino.
             </p>
           </div>

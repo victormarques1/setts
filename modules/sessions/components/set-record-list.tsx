@@ -1,11 +1,4 @@
 import type { SetRecord } from "@/app/generated/prisma/client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 type SetRecordListProps = {
   sets: SetRecord[];
@@ -14,33 +7,42 @@ type SetRecordListProps = {
 export function SetRecordList({ sets }: SetRecordListProps) {
   if (sets.length === 0) {
     return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Nenhuma série registrada</CardTitle>
-          <CardDescription>
-            Registre peso e repetições para cada série executada.
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="empty-state-card w-full">
+        <div className="flex flex-col gap-1.5">
+          <p className="empty-state-title">Nenhuma série registrada</p>
+          <p className="empty-state-description">
+            Use o formulário abaixo para registrar peso e repetições de cada
+            série executada.
+          </p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="flex w-full flex-col gap-3">
-      <h2 className="text-sm font-medium text-muted-foreground">
-        Séries registradas
-      </h2>
+    <div className="flex w-full flex-col gap-2.5">
+      <h2 className="metric-label px-0.5">Séries registradas</h2>
       <ul className="flex flex-col gap-2">
         {sets.map((set) => (
           <li key={set.id}>
-            <Card className="min-h-11 py-3">
-              <CardContent className="flex min-h-11 items-center justify-between gap-3 py-0 text-sm">
-                <span className="font-medium">Série {set.setNumber}</span>
-                <span className="text-muted-foreground shrink-0">
-                  {set.weight} kg × {set.reps} reps
+            <div className="list-card px-4 py-3">
+              <div className="flex min-h-10 items-center justify-between gap-3">
+                <span className="text-sm font-semibold">
+                  Série {set.setNumber}
                 </span>
-              </CardContent>
-            </Card>
+                <span className="metric-value-primary text-base">
+                  {set.weight}
+                  <span className="text-sm font-semibold text-primary/80">
+                    {" "}
+                    kg
+                  </span>
+                  <span className="text-muted-foreground text-sm font-medium">
+                    {" "}
+                    × {set.reps}
+                  </span>
+                </span>
+              </div>
+            </div>
           </li>
         ))}
       </ul>

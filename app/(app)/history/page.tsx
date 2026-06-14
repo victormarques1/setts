@@ -9,9 +9,9 @@ export default async function HistoryPage() {
   return (
     <div className="page-shell">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Histórico</h1>
-        <p className="text-muted-foreground text-sm sm:text-base">
-          Treinos finalizados com data de conclusão.
+        <h1 className="page-title">Histórico</h1>
+        <p className="page-subtitle">
+          Revise treinos finalizados e acompanhe sua consistência.
         </p>
       </div>
       <CompletedSessionList sessions={sessions} />

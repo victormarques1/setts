@@ -13,10 +13,10 @@ export default async function ProgressPage() {
 
   return (
     <div className="page-shell">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Progressão</h1>
-        <p className="text-muted-foreground text-sm sm:text-base">
-          Acompanhe a evolução da carga em cada exercício.
+      <div className="flex flex-col gap-1">
+        <h1 className="page-title">Progressão</h1>
+        <p className="page-subtitle">
+          Acompanhe recordes, gráficos e evolução da carga em cada exercício.
         </p>
       </div>
       <ProgressView

@@ -10,7 +10,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,9 +49,8 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full max-w-lg border-border/70">
       <CardHeader>
-        <CardTitle>Criar conta</CardTitle>
         <CardDescription>
           Cadastre-se para registrar treinos, séries e acompanhar sua evolução.
         </CardDescription>

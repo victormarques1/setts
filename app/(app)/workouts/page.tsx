@@ -12,10 +12,10 @@ export default async function WorkoutsPage() {
   return (
     <div className="page-shell">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Treinos</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Gerencie seus treinos e organize seus exercícios.
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="page-title">Treinos</h1>
+          <p className="page-subtitle">
+            Gerencie treinos e inicie sessões para registrar sua performance.
           </p>
         </div>
         {workouts.length > 0 ? (

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { startSessionAction } from "@/modules/sessions/actions/session.actions";
 
 type StartSessionFabProps = {
@@ -42,12 +43,17 @@ export function StartSessionFab({
     <>
       <Button
         type="button"
-        className="fixed-above-nav-fab md:hidden"
+        className={cn(
+          "fixed-above-nav-fab",
+          isPending && "pointer-events-none opacity-70",
+        )}
+        size="icon-lg"
         onClick={handleStart}
         disabled={isPending}
         aria-label={isPending ? "Abrindo treino..." : label}
+        aria-busy={isPending}
       >
-        <Play className="size-5" aria-hidden="true" />
+        <Play className="size-6 fill-current" aria-hidden="true" />
       </Button>
       {error ? (
         <p

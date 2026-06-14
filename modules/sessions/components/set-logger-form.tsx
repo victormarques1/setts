@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { formatWeight } from "@/lib/format-weight";
 import { recordSetAction } from "@/modules/sessions/actions/session.actions";
 
 type LastSet = {
@@ -28,10 +29,6 @@ type SetLoggerFormProps = {
   nextSetNumber: number;
   lastSet: LastSet | null;
 };
-
-function formatWeight(value: number) {
-  return Number.isInteger(value) ? String(value) : value.toFixed(1);
-}
 
 function StepperField({
   id,
@@ -66,7 +63,7 @@ function StepperField({
           type="button"
           variant="outline"
           size="icon"
-          className="shrink-0"
+          className="shrink-0 rounded-xl"
           onClick={() => onStep(-1)}
           disabled={disabled}
           aria-label={`Diminuir ${label.toLowerCase()}`}
@@ -87,13 +84,13 @@ function StepperField({
           disabled={disabled}
           autoFocus={autoFocus}
           aria-invalid={hasError ? true : undefined}
-          className="text-center"
+          className="text-center text-lg font-bold tabular-nums"
         />
         <Button
           type="button"
           variant="outline"
           size="icon"
-          className="shrink-0"
+          className="shrink-0 rounded-xl"
           onClick={() => onStep(1)}
           disabled={disabled}
           aria-label={`Aumentar ${label.toLowerCase()}`}
@@ -176,10 +173,10 @@ export function SetLoggerForm({
   }
 
   return (
-    <Card className="w-full shadow-lg">
-      <CardHeader className="gap-2 pb-3">
+    <Card className="w-full border-primary/15 shadow-[0_-4px_24px_-4px_oklch(0_0_0/50%)]">
+      <CardHeader className="gap-2 pb-2">
         <div className="flex items-center justify-between gap-3">
-          <CardTitle className="text-base">Série {nextSetNumber}</CardTitle>
+          <CardTitle>Série {nextSetNumber}</CardTitle>
           {lastSet ? (
             <Button
               type="button"
@@ -192,6 +189,14 @@ export function SetLoggerForm({
             </Button>
           ) : null}
         </div>
+        {lastSet ? (
+          <p className="text-muted-foreground text-xs">
+            Última:{" "}
+            <span className="font-semibold text-primary">
+              {formatWeight(lastSet.weight)} kg × {lastSet.reps}
+            </span>
+          </p>
+        ) : null}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -233,11 +238,11 @@ export function SetLoggerForm({
               </p>
             ) : null}
             {successMessage ? (
-              <p className="text-sm text-primary">{successMessage}</p>
+              <p className="text-sm font-medium text-primary">{successMessage}</p>
             ) : null}
           </div>
 
-          <Button className="w-full" type="submit" disabled={isPending}>
+          <Button className="w-full" size="lg" type="submit" disabled={isPending} aria-busy={isPending}>
             {isPending ? "Salvando..." : "Registrar série"}
           </Button>
         </form>

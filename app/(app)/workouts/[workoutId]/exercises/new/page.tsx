@@ -30,11 +30,11 @@ export default async function NewExercisePage({ params }: NewExercisePageProps) 
         >
           ← Voltar
         </Button>
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">
             Criar exercício
           </h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
+          <p className="page-subtitle">
             Adicione um exercício ao treino {workout.name}.
           </p>
         </div>

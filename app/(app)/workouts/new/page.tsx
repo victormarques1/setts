@@ -15,9 +15,9 @@ export default function NewWorkoutPage() {
         >
           ← Voltar
         </Button>
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Criar treino</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
+        <div className="flex flex-col gap-1">
+          <h1 className="page-title">Criar treino</h1>
+          <p className="page-subtitle">
             Cada treino pertence a você e pode conter vários exercícios.
           </p>
         </div>

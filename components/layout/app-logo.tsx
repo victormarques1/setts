@@ -13,10 +13,12 @@ const sizeStyles = {
   sm: {
     wrapper: "text-base sm:text-lg",
     icon: "size-5",
+    iconWrap: "size-8",
   },
   lg: {
     wrapper: "text-3xl sm:text-4xl",
-    icon: "size-8 sm:size-9",
+    icon: "size-7 sm:size-8",
+    iconWrap: "size-14 sm:size-16",
   },
 } as const;
 
@@ -25,12 +27,19 @@ function LogoContent({ size }: { size: "sm" | "lg" }) {
 
   return (
     <>
-      <Dumbbell
-        className={cn("shrink-0", styles.icon)}
-        aria-hidden="true"
-        strokeWidth={2.25}
-      />
-      <span>weightzz</span>
+      <span
+        className={cn(
+          "flex shrink-0 items-center justify-center rounded-xl bg-primary/12",
+          styles.iconWrap,
+        )}
+      >
+        <Dumbbell
+          className={cn("text-primary", styles.icon)}
+          aria-hidden="true"
+          strokeWidth={2.5}
+        />
+      </span>
+      <span className="tracking-tight">weightzz</span>
     </>
   );
 }
@@ -38,7 +47,7 @@ function LogoContent({ size }: { size: "sm" | "lg" }) {
 export function AppLogo({ href, size = "sm", className }: AppLogoProps) {
   const styles = sizeStyles[size];
   const wrapperClassName = cn(
-    "text-primary inline-flex items-center gap-2 font-semibold tracking-tight",
+    "text-foreground inline-flex items-center gap-2.5 font-bold tracking-tight",
     styles.wrapper,
     className,
   );

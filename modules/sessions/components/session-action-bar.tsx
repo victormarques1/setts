@@ -43,16 +43,23 @@ export function SessionActionBar({
 
   return (
     <div className="fixed-above-nav-bar">
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-2">
-        <p className="text-muted-foreground text-center text-xs">
-          {completedExercises}/{totalExercises} exercícios · {totalSets}{" "}
-          {totalSets === 1 ? "série" : "séries"}
-        </p>
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-2.5">
+        <div className="flex items-center justify-center gap-4 text-xs font-semibold" aria-live="polite">
+          <span className="text-muted-foreground">
+            <span className="text-foreground">{completedExercises}</span>/
+            {totalExercises} exercícios
+          </span>
+          <span className="text-border">·</span>
+          <span className="text-primary tabular-nums">
+            {totalSets} {totalSets === 1 ? "série" : "séries"}
+          </span>
+        </div>
         <Button
           className="w-full"
-          variant="secondary"
+          size="lg"
           onClick={handleComplete}
           disabled={isPending}
+          aria-busy={isPending}
         >
           {isPending ? "Finalizando..." : "Finalizar treino"}
         </Button>

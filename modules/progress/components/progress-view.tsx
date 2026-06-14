@@ -4,13 +4,6 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { UserExerciseSummary } from "@/modules/exercises/services/exercise.service";
 import { getExerciseProgressAction } from "@/modules/progress/actions/progress.actions";
@@ -61,19 +54,18 @@ export function ProgressView({
 
   if (exercises.length === 0) {
     return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Nenhum exercício cadastrado</CardTitle>
-          <CardDescription>
-            Crie treinos e exercícios para acompanhar sua progressão de carga.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button render={<Link href="/workouts" />} nativeButton={false}>
-            Ir para treinos
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="empty-state-card w-full">
+        <div className="flex flex-col gap-1.5">
+          <p className="empty-state-title">Nenhum exercício cadastrado</p>
+          <p className="empty-state-description">
+            Crie treinos e exercícios para visualizar gráficos e recordes de
+            carga.
+          </p>
+        </div>
+        <Button render={<Link href="/workouts" />} nativeButton={false}>
+          Ir para treinos
+        </Button>
+      </div>
     );
   }
 
@@ -81,8 +73,18 @@ export function ProgressView({
     (exercise) => exercise.id === selectedExerciseId,
   );
 
+  const bestWeight =
+    progress && progress.history.length > 0
+      ? Math.max(...progress.history.map((entry) => entry.weight))
+      : null;
+
+  const latestWeight =
+    progress && progress.history.length > 0
+      ? progress.history[progress.history.length - 1].weight
+      : null;
+
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-4">
       <div className="flex flex-col gap-2">
         <Label htmlFor="progress-exercise">Exercício</Label>
         <select
@@ -90,7 +92,8 @@ export function ProgressView({
           value={selectedExerciseId}
           onChange={(event) => handleSelectExercise(event.target.value)}
           disabled={isPending}
-          className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
+          aria-busy={isPending}
+          className="input-select"
         >
           {exercises.map((exercise) => (
             <option key={exercise.id} value={exercise.id}>
@@ -99,18 +102,19 @@ export function ProgressView({
           ))}
         </select>
         {selectedExercise ? (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-xs">
             Treino: {selectedExercise.workoutName}
           </p>
         ) : null}
       </div>
 
       {errorMessage ? (
-        <Card className="w-full border-destructive/40">
-          <CardContent className="px-6 py-4 text-sm text-destructive">
-            {errorMessage}
-          </CardContent>
-        </Card>
+        <div
+          className="rounded-2xl border border-destructive/30 bg-destructive/8 px-4 py-3 text-sm text-destructive"
+          role="alert"
+        >
+          {errorMessage}
+        </div>
       ) : null}
 
       {isPending ? (
@@ -120,15 +124,41 @@ export function ProgressView({
       ) : null}
 
       {progress ? (
-        <div className="flex w-full flex-col gap-6">
-          {progress.history.length > 0 ? (
-            <div className="rounded-xl border border-border bg-muted/20 px-4 py-3">
-              <p className="text-muted-foreground text-sm">Melhor carga</p>
-              <p className="text-2xl font-semibold">
-                {Math.max(...progress.history.map((entry) => entry.weight))} kg
+        <div className="flex w-full flex-col gap-4">
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="stat-card">
+              <p className="metric-label">Recorde</p>
+              <p className="metric-value-primary mt-1 text-2xl">
+                {bestWeight !== null ? (
+                  <>
+                    {bestWeight}
+                    <span className="text-base font-semibold text-primary/80">
+                      {" "}
+                      kg
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-muted-foreground text-lg">—</span>
+                )}
               </p>
             </div>
-          ) : null}
+            <div className="list-card px-4 py-3.5">
+              <p className="metric-label">Última carga</p>
+              <p className="metric-value mt-1 text-2xl">
+                {latestWeight !== null ? (
+                  <>
+                    {latestWeight}
+                    <span className="text-base font-semibold text-muted-foreground">
+                      {" "}
+                      kg
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-muted-foreground text-lg">—</span>
+                )}
+              </p>
+            </div>
+          </div>
           <ProgressChart history={progress.history} />
           <ProgressHistoryTable progress={progress} />
         </div>
