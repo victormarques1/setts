@@ -5,6 +5,7 @@ export type ExerciseProgressPoint = {
   date: string;
   weight: number;
   reps: number;
+  volume: number;
 };
 
 function formatDateOnly(date: Date): string {
@@ -43,12 +44,17 @@ export const progressRepository = {
       const bestSet = session.setRecords.reduce((best, current) =>
         current.weight > best.weight ? current : best,
       );
+      const volume = session.setRecords.reduce(
+        (total, set) => total + set.weight * set.reps,
+        0,
+      );
 
       return [
         {
           date: formatDateOnly(session.performedAt),
           weight: bestSet.weight,
           reps: bestSet.reps,
+          volume,
         },
       ];
     });

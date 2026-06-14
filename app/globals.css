@@ -348,11 +348,11 @@
   }
 
   .page-shell-sticky-form {
-    padding-bottom: calc(18rem + 4.25rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(22rem + 4.25rem + env(safe-area-inset-bottom, 0px));
   }
 
   [data-hide-bottom-nav] .page-shell-sticky-form {
-    padding-bottom: calc(18rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(22rem + env(safe-area-inset-bottom, 0px));
   }
 
   .page-shell-sticky-bar {

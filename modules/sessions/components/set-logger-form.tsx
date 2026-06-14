@@ -1,6 +1,7 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -223,6 +224,19 @@ export function SetLoggerForm({
 
           <Button className="w-full" size="lg" type="submit" disabled={isPending} aria-busy={isPending}>
             {isPending ? "Salvando..." : "Registrar série"}
+          </Button>
+
+          <Button
+            className="w-full"
+            size="lg"
+            variant="outline"
+            render={
+              <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
+            }
+            nativeButton={false}
+            disabled={isPending}
+          >
+            Finalizar exercício
           </Button>
         </form>
       </CardContent>

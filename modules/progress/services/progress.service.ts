@@ -13,6 +13,7 @@ export type ExerciseProgressHistoryPoint = {
   date: string;
   weight: number;
   reps: number;
+  volume: number;
 };
 
 export type ExerciseProgressView = {
