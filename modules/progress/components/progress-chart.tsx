@@ -32,22 +32,22 @@ export function ProgressChart({ history }: ProgressChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 8, right: 4, left: -8, bottom: 4 }}
+          margin={{ top: 8, right: 4, left: 4, bottom: 4 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
           <XAxis
             dataKey="date"
-            tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
             tickLine={false}
             axisLine={false}
             minTickGap={24}
             interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
             tickLine={false}
             axisLine={false}
-            width={40}
+            width={44}
             tickFormatter={(value) => `${value}`}
           />
           <Tooltip

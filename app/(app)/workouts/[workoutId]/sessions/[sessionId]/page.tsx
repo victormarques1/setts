@@ -5,7 +5,7 @@ import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
-import { CompleteSessionButton } from "@/modules/sessions/components/complete-session-button";
+import { SessionActionBar } from "@/modules/sessions/components/session-action-bar";
 import { SessionExerciseList } from "@/modules/sessions/components/session-exercise-list";
 import { sessionService } from "@/modules/sessions/services/session.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
@@ -39,8 +39,20 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const exercises = await exerciseService.listByWorkoutId(workoutId);
   const isActive = session.status === WorkoutSessionStatus.IN_PROGRESS;
 
+  const setCountByExercise = session.setRecords.reduce<Record<string, number>>(
+    (counts, set) => {
+      counts[set.exerciseId] = (counts[set.exerciseId] ?? 0) + 1;
+      return counts;
+    },
+    {},
+  );
+
+  const completedExercises = exercises.filter(
+    (exercise) => (setCountByExercise[exercise.id] ?? 0) > 0,
+  ).length;
+
   return (
-    <div className="page-shell">
+    <div className={isActive ? "page-shell page-shell-sticky-bar" : "page-shell"}>
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"
@@ -59,7 +71,10 @@ export default async function SessionPage({ params }: SessionPageProps) {
           ← Voltar
         </Button>
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight break-words sm:text-3xl">
+          <h1
+            className="text-2xl font-semibold tracking-tight break-words sm:text-3xl"
+            title={workout.name}
+          >
             {workout.name}
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base">
@@ -79,7 +94,13 @@ export default async function SessionPage({ params }: SessionPageProps) {
         isActive={isActive}
       />
       {isActive ? (
-        <CompleteSessionButton workoutId={workoutId} sessionId={sessionId} />
+        <SessionActionBar
+          workoutId={workoutId}
+          sessionId={sessionId}
+          completedExercises={completedExercises}
+          totalExercises={exercises.length}
+          totalSets={session.setRecords.length}
+        />
       ) : null}
     </div>
   );

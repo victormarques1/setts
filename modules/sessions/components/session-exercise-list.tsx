@@ -58,7 +58,7 @@ export function SessionExerciseList({
             >
               <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
                 <CardContent className="flex min-h-11 items-center justify-between gap-3 py-0">
-                  <span className="min-w-0 truncate font-medium">
+                  <span className="min-w-0 truncate font-medium" title={exercise.name}>
                     {exercise.name}
                   </span>
                   <span className="text-muted-foreground shrink-0 text-sm">

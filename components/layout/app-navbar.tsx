@@ -1,5 +1,6 @@
 "use client";
 
+import { Dumbbell, History, TrendingUp, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,6 +11,7 @@ type NavItem = {
   href: string;
   label: string;
   shortLabel: string;
+  icon: LucideIcon;
   isActive: (pathname: string) => boolean;
 };
 
@@ -18,6 +20,7 @@ const navItems: NavItem[] = [
     href: "/workouts",
     label: "Treinos",
     shortLabel: "Treinos",
+    icon: Dumbbell,
     isActive: (pathname) =>
       pathname === "/workouts" || pathname.startsWith("/workouts/"),
   },
@@ -25,6 +28,7 @@ const navItems: NavItem[] = [
     href: "/history",
     label: "Histórico",
     shortLabel: "Histórico",
+    icon: History,
     isActive: (pathname) =>
       pathname === "/history" || pathname.startsWith("/history/"),
   },
@@ -32,6 +36,7 @@ const navItems: NavItem[] = [
     href: "/progress",
     label: "Progressão",
     shortLabel: "Progresso",
+    icon: TrendingUp,
     isActive: (pathname) =>
       pathname === "/progress" || pathname.startsWith("/progress/"),
   },
@@ -51,6 +56,7 @@ function NavLink({
   variant: "header" | "bottom";
 }) {
   const active = item.isActive(pathname);
+  const Icon = item.icon;
 
   if (variant === "bottom") {
     return (
@@ -58,12 +64,13 @@ function NavLink({
         href={item.href}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex min-h-[3.25rem] flex-1 flex-col items-center justify-center gap-0.5 px-2 py-2.5 text-xs font-medium transition-colors",
+          "flex min-h-[3.25rem] flex-1 flex-col items-center justify-center gap-1 px-2 py-2 text-xs font-medium transition-colors",
           active
             ? "text-primary"
             : "text-muted-foreground active:bg-accent/60",
         )}
       >
+        <Icon className="size-5 shrink-0" aria-hidden={true} />
         <span className="truncate">{item.shortLabel}</span>
       </Link>
     );

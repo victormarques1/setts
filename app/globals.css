@@ -60,7 +60,7 @@
   --secondary: oklch(0.42 0.12 245);
   --secondary-foreground: oklch(0.96 0.02 245);
   --muted: oklch(0.22 0.018 260);
-  --muted-foreground: oklch(0.68 0.02 260);
+  --muted-foreground: oklch(0.75 0.02 260);
   --accent: oklch(0.24 0.03 245);
   --accent-foreground: oklch(0.92 0.02 245);
   --destructive: oklch(0.65 0.2 25);
@@ -96,7 +96,7 @@
   --secondary: oklch(0.42 0.12 245);
   --secondary-foreground: oklch(0.96 0.02 245);
   --muted: oklch(0.22 0.018 260);
-  --muted-foreground: oklch(0.68 0.02 260);
+  --muted-foreground: oklch(0.75 0.02 260);
   --accent: oklch(0.24 0.03 245);
   --accent-foreground: oklch(0.92 0.02 245);
   --destructive: oklch(0.65 0.2 25);
@@ -169,5 +169,38 @@
 
   .touch-target {
     @apply min-h-11;
+  }
+
+  .fixed-above-nav-form {
+    @apply fixed inset-x-0 z-40 border-t border-border bg-background/95 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80;
+    bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  }
+
+  .fixed-above-nav-bar {
+    @apply fixed inset-x-0 z-40 border-t border-border bg-background/95 px-[max(var(--page-gutter),env(safe-area-inset-left,0px))] py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80;
+    bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  }
+
+  .fixed-above-nav-fab {
+    @apply fixed z-40 size-14 rounded-full shadow-lg;
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+    right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  }
+
+  .fixed-above-nav-error {
+    @apply fixed inset-x-0 z-40 px-[max(var(--page-gutter),env(safe-area-inset-left,0px))] text-center;
+    bottom: calc(8.5rem + env(safe-area-inset-bottom, 0px));
+    padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  }
+
+  .page-shell-sticky-form {
+    padding-bottom: calc(18rem + 4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page-shell-sticky-bar {
+    padding-bottom: calc(7rem + 4rem + env(safe-area-inset-bottom, 0px));
   }
 }

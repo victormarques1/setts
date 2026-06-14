@@ -38,7 +38,7 @@ export function ProgressHistoryTable({ progress }: ProgressHistoryTableProps) {
             key={`${entry.date}-${index}`}
             className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-border px-4 py-3 text-sm"
           >
-            <span className="text-muted-foreground min-w-0 truncate">
+            <span className="text-muted-foreground min-w-0 truncate" title={formatProgressDate(entry.date)}>
               {formatProgressDate(entry.date)}
             </span>
             <span className="shrink-0 font-medium">{entry.weight}kg</span>

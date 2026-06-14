@@ -52,10 +52,14 @@ export default async function ExerciseLoggerPage({
 
   const nextSetNumber =
     sets.length > 0 ? sets[sets.length - 1].setNumber + 1 : 1;
+  const lastSet =
+    sets.length > 0
+      ? { weight: sets[sets.length - 1].weight, reps: sets[sets.length - 1].reps }
+      : null;
   const isActive = session.status === WorkoutSessionStatus.IN_PROGRESS;
 
   return (
-    <div className="page-shell">
+    <div className={isActive ? "page-shell page-shell-sticky-form" : "page-shell"}>
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"
@@ -68,7 +72,10 @@ export default async function ExerciseLoggerPage({
           ← Voltar
         </Button>
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight break-words sm:text-3xl">
+          <h1
+            className="text-2xl font-semibold tracking-tight break-words sm:text-3xl"
+            title={exercise.name}
+          >
             {exercise.name}
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base">
@@ -78,15 +85,20 @@ export default async function ExerciseLoggerPage({
           </p>
         </div>
       </div>
+
       <SetRecordList sets={sets} />
+
       {isActive ? (
-        <SetLoggerForm
-          key={nextSetNumber}
-          workoutId={workoutId}
-          sessionId={sessionId}
-          exerciseId={exerciseId}
-          nextSetNumber={nextSetNumber}
-        />
+        <div className="fixed-above-nav-form">
+          <SetLoggerForm
+            key={nextSetNumber}
+            workoutId={workoutId}
+            sessionId={sessionId}
+            exerciseId={exerciseId}
+            nextSetNumber={nextSetNumber}
+            lastSet={lastSet}
+          />
+        </div>
       ) : null}
     </div>
   );
