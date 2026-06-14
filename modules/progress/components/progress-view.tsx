@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import type { UserExerciseSummary } from "@/modules/exercises/services/exercise.service";
 import { getExerciseProgressAction } from "@/modules/progress/actions/progress.actions";
 import { ProgressChart } from "@/modules/progress/components/progress-chart";
-import { ProgressHistoryTable } from "@/modules/progress/components/progress-history-table";
+import { ProgressHighlights } from "@/modules/progress/components/progress-highlights";
+import { ProgressHistoryTimeline } from "@/modules/progress/components/progress-history-timeline";
 import type { ExerciseProgressView } from "@/modules/progress/services/progress.service";
 
 type ProgressViewProps = {
@@ -73,18 +74,8 @@ export function ProgressView({
     (exercise) => exercise.id === selectedExerciseId,
   );
 
-  const bestWeight =
-    progress && progress.history.length > 0
-      ? Math.max(...progress.history.map((entry) => entry.weight))
-      : null;
-
-  const latestWeight =
-    progress && progress.history.length > 0
-      ? progress.history[progress.history.length - 1].weight
-      : null;
-
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full min-w-0 flex-col gap-4">
       <div className="flex flex-col gap-2">
         <Label htmlFor="progress-exercise">Exercício</Label>
         <select
@@ -124,43 +115,10 @@ export function ProgressView({
       ) : null}
 
       {progress ? (
-        <div className="flex w-full flex-col gap-4">
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="stat-card">
-              <p className="metric-label">Recorde</p>
-              <p className="metric-value-primary mt-1 text-2xl">
-                {bestWeight !== null ? (
-                  <>
-                    {bestWeight}
-                    <span className="text-base font-semibold text-primary/80">
-                      {" "}
-                      kg
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-muted-foreground text-lg">—</span>
-                )}
-              </p>
-            </div>
-            <div className="list-card px-4 py-3.5">
-              <p className="metric-label">Última carga</p>
-              <p className="metric-value mt-1 text-2xl">
-                {latestWeight !== null ? (
-                  <>
-                    {latestWeight}
-                    <span className="text-base font-semibold text-muted-foreground">
-                      {" "}
-                      kg
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-muted-foreground text-lg">—</span>
-                )}
-              </p>
-            </div>
-          </div>
+        <div className="flex w-full min-w-0 flex-col gap-5">
+          <ProgressHighlights progress={progress} />
           <ProgressChart history={progress.history} />
-          <ProgressHistoryTable progress={progress} />
+          <ProgressHistoryTimeline progress={progress} />
         </div>
       ) : null}
     </div>

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 export type ExerciseProgressPoint = {
   date: string;
   weight: number;
+  reps: number;
 };
 
 function formatDateOnly(date: Date): string {
@@ -28,7 +29,7 @@ export const progressRepository = {
       include: {
         setRecords: {
           where: { exerciseId },
-          select: { weight: true },
+          select: { weight: true, reps: true },
         },
       },
       orderBy: { performedAt: "asc" },
@@ -39,14 +40,15 @@ export const progressRepository = {
         return [];
       }
 
-      const maxWeight = Math.max(
-        ...session.setRecords.map((record) => record.weight),
+      const bestSet = session.setRecords.reduce((best, current) =>
+        current.weight > best.weight ? current : best,
       );
 
       return [
         {
           date: formatDateOnly(session.performedAt),
-          weight: maxWeight,
+          weight: bestSet.weight,
+          reps: bestSet.reps,
         },
       ];
     });

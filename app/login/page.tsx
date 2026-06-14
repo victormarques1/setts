@@ -1,3 +1,4 @@
+import { AppLogo } from "@/components/layout/app-logo";
 import { LoginForm } from "@/modules/auth/components/login-form";
 
 type LoginPageProps = {
@@ -9,11 +10,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <div className="page-shell-auth">
-      <div className="flex flex-col gap-1 text-center">
-        <h1 className="page-title">Entrar</h1>
-        <p className="page-subtitle">
-          Faça login para acessar seus treinos.
-        </p>
+      <div className="flex justify-center">
+        <AppLogo size="lg" />
       </div>
       <LoginForm callbackUrl={callbackUrl ?? "/workouts"} />
     </div>

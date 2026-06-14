@@ -12,6 +12,7 @@ export class ExerciseNotFoundError extends Error {
 export type ExerciseProgressHistoryPoint = {
   date: string;
   weight: number;
+  reps: number;
 };
 
 export type ExerciseProgressView = {

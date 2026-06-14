@@ -16,7 +16,7 @@ export default async function ProgressPage() {
       <div className="flex flex-col gap-1">
         <h1 className="page-title">Progressão</h1>
         <p className="page-subtitle">
-          Acompanhe recordes, gráficos e evolução da carga em cada exercício.
+          Veja sua última carga, recorde e evolução em cada exercício.
         </p>
       </div>
       <ProgressView

@@ -190,6 +190,46 @@
     @apply text-lg font-bold tabular-nums tracking-tight text-primary;
   }
 
+  .metric-hero-value {
+    @apply text-[1.75rem] font-extrabold leading-none tabular-nums tracking-tight text-foreground sm:text-3xl;
+  }
+
+  .metric-hero-unit {
+    @apply ml-0.5 text-base font-bold sm:text-lg;
+  }
+
+  .metric-hero-caption {
+    @apply text-[0.6875rem] font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+
+  .progress-timeline {
+    @apply flex w-full min-w-0 flex-col;
+  }
+
+  .progress-timeline-item {
+    @apply flex min-w-0 gap-3;
+  }
+
+  .progress-timeline-marker {
+    @apply flex w-6 shrink-0 flex-col items-center;
+  }
+
+  .progress-timeline-dot {
+    @apply flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-[0.625rem] leading-none;
+  }
+
+  .progress-timeline-dot-record {
+    @apply bg-primary/15 text-sm;
+  }
+
+  .progress-timeline-line {
+    @apply mt-1 w-px flex-1 bg-border/80;
+  }
+
+  .progress-timeline-content {
+    @apply min-w-0 pt-0.5;
+  }
+
   .list-card,
   .list-card-interactive {
     @apply flex flex-col rounded-2xl border border-border/70 bg-card shadow-[0_4px_16px_-4px_oklch(0_0_0/35%)];
