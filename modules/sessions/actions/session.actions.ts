@@ -18,7 +18,11 @@ import {
   sessionService,
   type CompletedSessionSummary,
 } from "@/modules/sessions/services/session.service";
-import type { CreateSetRecordFormInput } from "@/modules/sessions/validations/session.schema";
+import type { CreateSetRecordFormInput, UpdateSetRecordFormInput } from "@/modules/sessions/validations/session.schema";
+import {
+  SetRecordNotFoundError,
+  updateSetRecordService,
+} from "@/modules/sessions/services/update-set-record.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
 type WorkoutSessionWithSets = WorkoutSession & { setRecords: SetRecord[] };
@@ -143,5 +147,41 @@ export async function recordSetAction(
     }
 
     return actionError("Não foi possível registrar a série.");
+  }
+}
+
+export async function updateSetRecordAction(
+  workoutId: string,
+  sessionId: string,
+  exerciseId: string,
+  setRecordId: string,
+  input: UpdateSetRecordFormInput,
+): Promise<ActionResult<SetRecord>> {
+  try {
+    const userId = await getCurrentUserId();
+    const setRecord = await updateSetRecordService.update(
+      setRecordId,
+      input,
+      userId,
+      workoutId,
+      sessionId,
+      exerciseId,
+    );
+    revalidatePath(`/workouts/${workoutId}`);
+    revalidatePath(getSessionPath(workoutId, sessionId));
+    revalidatePath(getExerciseLoggerPath(workoutId, sessionId, exerciseId));
+    revalidatePath("/progress");
+    revalidatePath("/history");
+    return actionSuccess(setRecord);
+  } catch (error) {
+    if (error instanceof SetRecordNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof z.ZodError) {
+      return actionError(error.issues[0]?.message ?? "Dados inválidos.");
+    }
+
+    return actionError("Não foi possível atualizar a série.");
   }
 }

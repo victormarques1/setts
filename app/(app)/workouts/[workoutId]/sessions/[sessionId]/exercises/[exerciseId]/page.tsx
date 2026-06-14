@@ -86,7 +86,12 @@ export default async function ExerciseLoggerPage({
         </div>
       </div>
 
-      <SetRecordList sets={sets} />
+      <SetRecordList
+        workoutId={workoutId}
+        sessionId={sessionId}
+        exerciseId={exerciseId}
+        sets={sets}
+      />
 
       {isActive ? (
         <div className="fixed-above-nav-form">

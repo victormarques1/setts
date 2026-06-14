@@ -1,10 +1,19 @@
 import type { SetRecord } from "@/app/generated/prisma/client";
+import { SetRecordListItem } from "@/modules/sessions/components/set-record-list-item";
 
 type SetRecordListProps = {
+  workoutId: string;
+  sessionId: string;
+  exerciseId: string;
   sets: SetRecord[];
 };
 
-export function SetRecordList({ sets }: SetRecordListProps) {
+export function SetRecordList({
+  workoutId,
+  sessionId,
+  exerciseId,
+  sets,
+}: SetRecordListProps) {
   if (sets.length === 0) {
     return (
       <div className="empty-state-card w-full">
@@ -24,26 +33,13 @@ export function SetRecordList({ sets }: SetRecordListProps) {
       <h2 className="metric-label px-0.5">Séries registradas</h2>
       <ul className="flex flex-col gap-2">
         {sets.map((set) => (
-          <li key={set.id}>
-            <div className="list-card px-4 py-3">
-              <div className="flex min-h-10 items-center justify-between gap-3">
-                <span className="text-sm font-semibold">
-                  Série {set.setNumber}
-                </span>
-                <span className="metric-value-primary text-base">
-                  {set.weight}
-                  <span className="text-sm font-semibold text-primary/80">
-                    {" "}
-                    kg
-                  </span>
-                  <span className="text-muted-foreground text-sm font-medium">
-                    {" "}
-                    × {set.reps}
-                  </span>
-                </span>
-              </div>
-            </div>
-          </li>
+          <SetRecordListItem
+            key={set.id}
+            workoutId={workoutId}
+            sessionId={sessionId}
+            exerciseId={exerciseId}
+            set={set}
+          />
         ))}
       </ul>
     </div>
