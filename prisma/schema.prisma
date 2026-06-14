@@ -36,14 +36,21 @@ model Exercise {
 }
 
 model WorkoutSession {
-  id          String      @id @default(cuid())
+  id          String               @id @default(cuid())
   workoutId   String
-  performedAt DateTime    @default(now())
-  workout     Workout     @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  status      WorkoutSessionStatus @default(IN_PROGRESS)
+  performedAt DateTime?
+  workout     Workout              @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   setRecords  SetRecord[]
 
   @@index([workoutId])
+  @@index([workoutId, status])
   @@index([performedAt])
+}
+
+enum WorkoutSessionStatus {
+  IN_PROGRESS
+  COMPLETED
 }
 
 model SetRecord {

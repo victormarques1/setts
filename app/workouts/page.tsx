@@ -19,10 +19,23 @@ export default async function WorkoutsPage() {
           </p>
         </div>
         {workouts.length > 0 ? (
-          <Button render={<Link href="/workouts/new" />} nativeButton={false}>
-            Novo treino
+          <div className="flex flex-col items-end gap-2">
+            <Button render={<Link href="/workouts/new" />} nativeButton={false}>
+              Novo treino
+            </Button>
+            <Button
+              variant="outline"
+              render={<Link href="/history" />}
+              nativeButton={false}
+            >
+              Histórico
+            </Button>
+          </div>
+        ) : (
+          <Button render={<Link href="/history" />} nativeButton={false} variant="outline">
+            Histórico
           </Button>
-        ) : null}
+        )}
       </div>
       <WorkoutList workouts={workouts} />
     </div>

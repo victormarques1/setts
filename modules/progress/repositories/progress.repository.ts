@@ -1,3 +1,4 @@
+import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { ProgressQueryInput } from "@/modules/progress/validations/progress.schema";
 
@@ -9,7 +10,9 @@ export const progressRepository = {
       where: {
         exerciseId,
         session: {
+          status: WorkoutSessionStatus.COMPLETED,
           performedAt: {
+            not: null,
             ...(from ? { gte: from } : {}),
             ...(to ? { lte: to } : {}),
           },

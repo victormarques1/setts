@@ -13,9 +13,19 @@ export default function Home() {
             progressão ao longo do tempo.
           </p>
         </div>
-        <Button size="lg" render={<Link href="/workouts" />} nativeButton={false}>
-          Meus treinos
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button size="lg" render={<Link href="/workouts" />} nativeButton={false}>
+            Meus treinos
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            render={<Link href="/history" />}
+            nativeButton={false}
+          >
+            Histórico
+          </Button>
+        </div>
       </main>
     </div>
   );

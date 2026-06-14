@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
 import { ExerciseList } from "@/modules/exercises/components/exercise-list";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
+import { StartSessionButton } from "@/modules/sessions/components/start-session-button";
+import { sessionService } from "@/modules/sessions/services/session.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
 type WorkoutPageProps = {
@@ -21,6 +23,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
   }
 
   const exercises = await exerciseService.listByWorkoutId(workoutId);
+  const activeSession = await sessionService.getActiveSession(workoutId, userId);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
@@ -42,16 +45,25 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
               Exercícios deste treino.
             </p>
           </div>
-          {exercises.length > 0 ? (
-            <Button
-              render={
-                <Link href={`/workouts/${workoutId}/exercises/new`} />
-              }
-              nativeButton={false}
-            >
-              Novo exercício
-            </Button>
-          ) : null}
+          <div className="flex flex-col items-end gap-2">
+            {exercises.length > 0 ? (
+              <StartSessionButton
+                workoutId={workoutId}
+                hasActiveSession={activeSession !== null}
+              />
+            ) : null}
+            {exercises.length > 0 ? (
+              <Button
+                variant="outline"
+                render={
+                  <Link href={`/workouts/${workoutId}/exercises/new`} />
+                }
+                nativeButton={false}
+              >
+                Novo exercício
+              </Button>
+            ) : null}
+          </div>
         </div>
       </div>
       <ExerciseList workoutId={workoutId} exercises={exercises} />

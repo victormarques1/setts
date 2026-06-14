@@ -23,6 +23,10 @@ export const exerciseService = {
     return exerciseRepository.findById(id);
   },
 
+  getByIdForWorkout(exerciseId: string, workoutId: string) {
+    return exerciseRepository.findByIdForWorkout(exerciseId, workoutId);
+  },
+
   async create(input: CreateExerciseInput, userId: string) {
     const data = createExerciseSchema.parse(input);
     const workout = await workoutRepository.findByIdForUser(

@@ -16,12 +16,22 @@ export const progressService = {
     const query = progressQuerySchema.parse(input);
 
     return progressRepository.findSetRecordsByExercise(query).then((records) =>
-      records.map((record) => ({
-        performedAt: record.session.performedAt,
-        setNumber: record.setNumber,
-        weight: record.weight,
-        reps: record.reps,
-      })),
+      records.flatMap((record) => {
+        const performedAt = record.session.performedAt;
+
+        if (!performedAt) {
+          return [];
+        }
+
+        return [
+          {
+            performedAt,
+            setNumber: record.setNumber,
+            weight: record.weight,
+            reps: record.reps,
+          },
+        ];
+      }),
     );
   },
 };
