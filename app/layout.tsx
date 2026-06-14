@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "weightzz",
+  title: "setts",
   description: "Registre e acompanhe sua progressão de carga na academia.",
 };
 

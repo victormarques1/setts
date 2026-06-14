@@ -39,7 +39,7 @@ function LogoContent({ size }: { size: "sm" | "lg" }) {
           strokeWidth={2.5}
         />
       </span>
-      <span className="tracking-tight">weightzz</span>
+      <span className="tracking-tight">setts</span>
     </>
   );
 }

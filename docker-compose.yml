@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: weightzz-postgres
+    container_name: setts-postgres
     restart: unless-stopped
     ports:
       - "${POSTGRES_PORT}:5432"

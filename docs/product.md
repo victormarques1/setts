@@ -1,4 +1,4 @@
-# weightzz
+# setts
 
 Objetivo:
 Permitir registrar progressão de carga na academia.
