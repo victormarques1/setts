@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -11,8 +13,8 @@ export default function Home() {
             progressão ao longo do tempo.
           </p>
         </div>
-        <Button disabled size="lg">
-          Em breve
+        <Button size="lg" render={<Link href="/workouts" />} nativeButton={false}>
+          Meus treinos
         </Button>
       </main>
     </div>

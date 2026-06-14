@@ -12,6 +12,7 @@ function createPrismaClient(): PrismaClient {
     globalForPrisma.pool ??
     new Pool({
       connectionString: process.env.DATABASE_URL,
+      max: process.env.NODE_ENV === "production" ? 1 : 10,
     });
 
   if (process.env.NODE_ENV !== "production") {
