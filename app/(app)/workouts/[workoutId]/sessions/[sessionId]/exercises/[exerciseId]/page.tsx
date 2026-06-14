@@ -4,10 +4,10 @@ import { notFound } from "next/navigation";
 import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
+import { getCachedSessionForUser } from "@/lib/cached-session";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
 import { CancelSessionButton } from "@/modules/sessions/components/cancel-session-button";
-import { SetLoggerForm } from "@/modules/sessions/components/set-logger-form";
-import { SetRecordList } from "@/modules/sessions/components/set-record-list";
+import { ExerciseLoggerPanel } from "@/modules/sessions/components/exercise-logger-panel";
 import { sessionService } from "@/modules/sessions/services/session.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
@@ -30,7 +30,7 @@ export default async function ExerciseLoggerPage({
     notFound();
   }
 
-  const session = await sessionService.getByIdForUser(sessionId, userId);
+  const session = await getCachedSessionForUser(sessionId, userId);
 
   if (!session || session.workoutId !== workoutId) {
     notFound();
@@ -55,12 +55,6 @@ export default async function ExerciseLoggerPage({
     userId,
   );
 
-  const nextSetNumber =
-    sets.length > 0 ? sets[sets.length - 1].setNumber + 1 : 1;
-  const lastSet =
-    sets.length > 0
-      ? { weight: sets[sets.length - 1].weight, reps: sets[sets.length - 1].reps }
-      : null;
   const isActive = session.status === WorkoutSessionStatus.ACTIVE;
 
   return (
@@ -99,25 +93,13 @@ export default async function ExerciseLoggerPage({
         </div>
       </div>
 
-      <SetRecordList
+      <ExerciseLoggerPanel
         workoutId={workoutId}
         sessionId={sessionId}
         exerciseId={exerciseId}
-        sets={sets}
+        initialSets={sets}
+        isActive={isActive}
       />
-
-      {isActive ? (
-        <div className="fixed-above-nav-form">
-          <SetLoggerForm
-            key={nextSetNumber}
-            workoutId={workoutId}
-            sessionId={sessionId}
-            exerciseId={exerciseId}
-            nextSetNumber={nextSetNumber}
-            lastSet={lastSet}
-          />
-        </div>
-      ) : null}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { AppChromeSetter } from "@/components/layout/app-chrome-setter";
 import { getCurrentUserId } from "@/lib/current-user";
-import { sessionService } from "@/modules/sessions/services/session.service";
+import { getCachedSessionForUser } from "@/lib/cached-session";
 
 type SessionLayoutProps = {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export default async function SessionLayout({
 }: SessionLayoutProps) {
   const { workoutId, sessionId } = await params;
   const userId = await getCurrentUserId();
-  const session = await sessionService.getByIdForUser(sessionId, userId);
+  const session = await getCachedSessionForUser(sessionId, userId);
   const hideBottomNav =
     session?.workoutId === workoutId &&
     session.status === WorkoutSessionStatus.ACTIVE;

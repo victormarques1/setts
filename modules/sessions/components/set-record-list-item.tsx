@@ -20,6 +20,7 @@ type SetRecordListItemProps = {
   sessionId: string;
   exerciseId: string;
   set: SetRecordItem;
+  isOptimistic?: boolean;
 };
 
 function formatSetLabel(setNumber: number, weight: number, reps: number) {
@@ -31,6 +32,7 @@ export function SetRecordListItem({
   sessionId,
   exerciseId,
   set,
+  isOptimistic = false,
 }: SetRecordListItemProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -39,9 +41,19 @@ export function SetRecordListItem({
   return (
     <>
       <li>
-        <div className="list-card px-4 py-3.5">
+        <div
+          className={isOptimistic ? "list-card px-4 py-3.5 opacity-60" : "list-card px-4 py-3.5"}
+          aria-busy={isOptimistic ? true : undefined}
+        >
           <div className="flex min-h-11 items-center justify-between gap-3">
-            <span className="text-sm font-semibold">Série {set.setNumber}</span>
+            <span className="text-sm font-semibold">
+              Série {set.setNumber}
+              {isOptimistic ? (
+                <span className="text-muted-foreground ml-2 text-xs font-medium">
+                  Salvando…
+                </span>
+              ) : null}
+            </span>
             <div className="flex shrink-0 items-center gap-2">
               <span className="metric-value-primary text-base">
                 {formatWeight(set.weight)}
@@ -51,14 +63,18 @@ export function SetRecordListItem({
                   × {set.reps}
                 </span>
               </span>
-              <EditActionButton
-                entityName={entityName}
-                onClick={() => setIsEditOpen(true)}
-              />
-              <DeleteActionButton
-                entityName={entityName}
-                onClick={() => setIsDeleteOpen(true)}
-              />
+              {!isOptimistic ? (
+                <>
+                  <EditActionButton
+                    entityName={entityName}
+                    onClick={() => setIsEditOpen(true)}
+                  />
+                  <DeleteActionButton
+                    entityName={entityName}
+                    onClick={() => setIsDeleteOpen(true)}
+                  />
+                </>
+              ) : null}
             </div>
           </div>
         </div>

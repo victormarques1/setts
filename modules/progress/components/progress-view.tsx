@@ -39,6 +39,7 @@ export function ProgressView({ exercises }: ProgressViewProps) {
     useState<UserExerciseSummary | null>(null);
   const [progress, setProgress] = useState<ExerciseProgressView | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loadingExerciseId, setLoadingExerciseId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const workoutNames = useMemo(
@@ -65,6 +66,26 @@ export function ProgressView({ exercises }: ProgressViewProps) {
     });
   }, [exercises, searchQuery, selectedWorkout]);
 
+  function loadExerciseProgress(exerciseId: string) {
+    setErrorMessage(null);
+    setProgress(null);
+    setLoadingExerciseId(exerciseId);
+
+    startTransition(async () => {
+      const result = await getExerciseProgressAction(exerciseId);
+
+      if (!result.success) {
+        setProgress(null);
+        setErrorMessage(result.error);
+        setLoadingExerciseId(null);
+        return;
+      }
+
+      setProgress(result.data);
+      setLoadingExerciseId(null);
+    });
+  }
+
   const handleSelectExercise = (exerciseId: string) => {
     const exercise = exercises.find((item) => item.id === exerciseId);
 
@@ -73,26 +94,22 @@ export function ProgressView({ exercises }: ProgressViewProps) {
     }
 
     setSelectedExercise(exercise);
-    setErrorMessage(null);
-    setProgress(null);
-
-    startTransition(async () => {
-      const result = await getExerciseProgressAction(exerciseId);
-
-      if (!result.success) {
-        setProgress(null);
-        setErrorMessage(result.error);
-        return;
-      }
-
-      setProgress(result.data);
-    });
+    loadExerciseProgress(exerciseId);
   };
 
   const handleBack = () => {
     setSelectedExercise(null);
     setProgress(null);
     setErrorMessage(null);
+    setLoadingExerciseId(null);
+  };
+
+  const handleRetry = () => {
+    if (!selectedExercise) {
+      return;
+    }
+
+    loadExerciseProgress(selectedExercise.id);
   };
 
   if (exercises.length === 0) {
@@ -121,6 +138,7 @@ export function ProgressView({ exercises }: ProgressViewProps) {
         isPending={isPending}
         errorMessage={errorMessage}
         onBack={handleBack}
+        onRetry={handleRetry}
       />
     );
   }
@@ -146,7 +164,7 @@ export function ProgressView({ exercises }: ProgressViewProps) {
       <ProgressExerciseList
         exercises={filteredExercises}
         selectedExerciseId=""
-        loadingExerciseId={null}
+        loadingExerciseId={loadingExerciseId}
         onSelectExercise={handleSelectExercise}
       />
     </div>

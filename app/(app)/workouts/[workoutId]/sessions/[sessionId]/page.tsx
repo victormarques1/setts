@@ -4,11 +4,12 @@ import { notFound } from "next/navigation";
 import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
+import { getCachedSessionForUser } from "@/lib/cached-session";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
 import { CancelSessionButton } from "@/modules/sessions/components/cancel-session-button";
 import { SessionActionBar } from "@/modules/sessions/components/session-action-bar";
 import { SessionExerciseList } from "@/modules/sessions/components/session-exercise-list";
-import { sessionService } from "@/modules/sessions/services/session.service";
+import { SessionRefreshOnShow } from "@/modules/sessions/components/session-refresh-on-show";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
 type SessionPageProps = {
@@ -31,7 +32,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
     notFound();
   }
 
-  const session = await sessionService.getByIdForUser(sessionId, userId);
+  const session = await getCachedSessionForUser(sessionId, userId);
 
   if (!session || session.workoutId !== workoutId) {
     notFound();
@@ -58,6 +59,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
   return (
     <div className={isActive ? "page-shell page-shell-sticky-bar" : "page-shell"}>
+      {isActive ? <SessionRefreshOnShow /> : null}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-0.5">
           <Button

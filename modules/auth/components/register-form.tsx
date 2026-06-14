@@ -18,6 +18,7 @@ import { registerAction } from "@/modules/auth/actions/register.action";
 export function RegisterForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(formData: FormData) {
@@ -44,9 +45,18 @@ export function RegisterForm() {
         return;
       }
 
+      setIsRedirecting(true);
+      router.push("/workouts");
       router.refresh();
     });
   }
+
+  const isBusy = isPending || isRedirecting;
+  const submitLabel = isRedirecting
+    ? "Redirecionando..."
+    : isPending
+      ? "Cadastrando..."
+      : "Criar conta";
 
   return (
     <Card className="w-full max-w-lg border-border/70">
@@ -66,7 +76,7 @@ export function RegisterForm() {
               placeholder="Seu nome"
               maxLength={100}
               required
-              disabled={isPending}
+              disabled={isBusy}
               aria-invalid={error ? true : undefined}
             />
           </div>
@@ -79,7 +89,7 @@ export function RegisterForm() {
               autoComplete="email"
               placeholder="seu@email.com"
               required
-              disabled={isPending}
+              disabled={isBusy}
               aria-invalid={error ? true : undefined}
             />
           </div>
@@ -92,7 +102,7 @@ export function RegisterForm() {
               autoComplete="new-password"
               minLength={8}
               required
-              disabled={isPending}
+              disabled={isBusy}
               aria-invalid={error ? true : undefined}
             />
             <p className="text-muted-foreground text-xs">
@@ -105,8 +115,8 @@ export function RegisterForm() {
             </p>
           ) : null}
           <div className="flex flex-col gap-2">
-            <Button className="w-full" type="submit" disabled={isPending}>
-              {isPending ? "Cadastrando..." : "Criar conta"}
+            <Button className="w-full" type="submit" disabled={isBusy} aria-busy={isBusy}>
+              {submitLabel}
             </Button>
             <p className="text-muted-foreground text-sm">
               Já tem conta?{" "}

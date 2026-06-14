@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ export function ActiveSessionBanner({
   workoutId,
   sessionId,
 }: ActiveSessionBannerProps) {
+  const router = useRouter();
   const [isCancelOpen, setIsCancelOpen] = useState(false);
 
   return (
@@ -51,6 +53,10 @@ export function ActiveSessionBanner({
           workoutId={workoutId}
           sessionId={sessionId}
           onClose={() => setIsCancelOpen(false)}
+          onSuccess={() => {
+            router.push(`/workouts/${workoutId}`);
+            router.refresh();
+          }}
         />
       ) : null}
     </>

@@ -370,4 +370,18 @@
   .nav-focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50;
   }
+
+  .nav-progress-bar {
+    width: 35%;
+    animation: nav-progress 1s ease-in-out infinite;
+  }
+
+  @keyframes nav-progress {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(350%);
+    }
+  }
 }

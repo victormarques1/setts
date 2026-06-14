@@ -2,6 +2,8 @@
 
 import { ArrowLeft } from "lucide-react";
 
+import { ErrorStateCard } from "@/components/feedback/error-state-card";
+import { ProgressDetailSkeleton } from "@/components/loading/page-skeletons";
 import { Button } from "@/components/ui/button";
 import { ProgressChart } from "@/modules/progress/components/progress-chart";
 import { ProgressHighlights } from "@/modules/progress/components/progress-highlights";
@@ -14,6 +16,7 @@ type ProgressExerciseDetailProps = {
   isPending: boolean;
   errorMessage: string | null;
   onBack: () => void;
+  onRetry: () => void;
 };
 
 export function ProgressExerciseDetail({
@@ -23,6 +26,7 @@ export function ProgressExerciseDetail({
   isPending,
   errorMessage,
   onBack,
+  onRetry,
 }: ProgressExerciseDetailProps) {
   return (
     <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-5">
@@ -32,6 +36,7 @@ export function ProgressExerciseDetail({
           variant="ghost"
           className="back-link w-fit"
           onClick={onBack}
+          disabled={isPending}
         >
           <ArrowLeft className="size-4" aria-hidden />
           Voltar
@@ -46,19 +51,10 @@ export function ProgressExerciseDetail({
       </div>
 
       {errorMessage ? (
-        <div
-          className="rounded-2xl border border-destructive/30 bg-destructive/8 px-4 py-3 text-sm text-destructive"
-          role="alert"
-        >
-          {errorMessage}
-        </div>
+        <ErrorStateCard message={errorMessage} onRetry={onRetry} />
       ) : null}
 
-      {isPending ? (
-        <p className="text-muted-foreground text-sm" aria-live="polite">
-          Carregando progressão...
-        </p>
-      ) : null}
+      {isPending && !progress ? <ProgressDetailSkeleton /> : null}
 
       {progress ? (
         <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-5">

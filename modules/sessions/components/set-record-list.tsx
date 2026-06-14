@@ -5,7 +5,7 @@ type SetRecordListProps = {
   workoutId: string;
   sessionId: string;
   exerciseId: string;
-  sets: SetRecord[];
+  sets: Array<SetRecord & { isOptimistic?: boolean }>;
 };
 
 export function SetRecordList({
@@ -39,6 +39,7 @@ export function SetRecordList({
             sessionId={sessionId}
             exerciseId={exerciseId}
             set={set}
+            isOptimistic={set.isOptimistic === true}
           />
         ))}
       </ul>

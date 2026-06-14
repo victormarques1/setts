@@ -36,7 +36,7 @@ export function FormDialog({
   pendingLabel = "Salvando...",
 }: FormDialogProps) {
   function handleOpenChange(open: boolean) {
-    if (!open) {
+    if (!open && !isPending) {
       onClose();
     }
   }

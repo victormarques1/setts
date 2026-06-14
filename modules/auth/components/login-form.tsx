@@ -22,6 +22,7 @@ type LoginFormProps = {
 export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(formData: FormData) {
@@ -43,9 +44,18 @@ export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
         return;
       }
 
+      setIsRedirecting(true);
+      router.push(callbackUrl);
       router.refresh();
     });
   }
+
+  const isBusy = isPending || isRedirecting;
+  const submitLabel = isRedirecting
+    ? "Redirecionando..."
+    : isPending
+      ? "Entrando..."
+      : "Entrar";
 
   return (
     <Card className="w-full max-w-lg border-border/70">
@@ -65,7 +75,7 @@ export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
               autoComplete="email"
               placeholder="seu@email.com"
               required
-              disabled={isPending}
+              disabled={isBusy}
               aria-invalid={error ? true : undefined}
             />
           </div>
@@ -78,7 +88,7 @@ export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
               autoComplete="current-password"
               minLength={8}
               required
-              disabled={isPending}
+              disabled={isBusy}
               aria-invalid={error ? true : undefined}
             />
           </div>
@@ -88,8 +98,8 @@ export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
             </p>
           ) : null}
           <div className="flex flex-col gap-2">
-            <Button className="w-full" type="submit" disabled={isPending}>
-              {isPending ? "Entrando..." : "Entrar"}
+            <Button className="w-full" type="submit" disabled={isBusy} aria-busy={isBusy}>
+              {submitLabel}
             </Button>
             <p className="text-muted-foreground text-sm">
               Não tem conta?{" "}

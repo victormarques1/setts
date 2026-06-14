@@ -2,8 +2,7 @@
 
 import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,19 +14,23 @@ import {
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatWeight } from "@/lib/format-weight";
-import { recordSetAction } from "@/modules/sessions/actions/session.actions";
 
 type LastSet = {
   weight: number;
   reps: number;
 };
 
+type RecordSetResult =
+  | { success: true }
+  | { success: false; error: string };
+
 type SetLoggerFormProps = {
   workoutId: string;
   sessionId: string;
-  exerciseId: string;
   nextSetNumber: number;
   lastSet: LastSet | null;
+  onRecordSet: (weight: string, reps: string) => Promise<RecordSetResult>;
+  isSubmitting: boolean;
 };
 
 function StepperField({
@@ -94,18 +97,17 @@ function StepperField({
 export function SetLoggerForm({
   workoutId,
   sessionId,
-  exerciseId,
   nextSetNumber,
   lastSet,
+  onRecordSet,
+  isSubmitting,
 }: SetLoggerFormProps) {
-  const router = useRouter();
   const [weight, setWeight] = useState(() =>
     lastSet ? formatWeight(lastSet.weight) : "",
   );
   const [reps, setReps] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
 
   function adjustWeight(delta: number) {
     setWeight((current) => {
@@ -133,7 +135,7 @@ export function SetLoggerForm({
     setError(null);
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!weight || !reps) {
@@ -144,21 +146,23 @@ export function SetLoggerForm({
     setError(null);
     setSuccessMessage(null);
 
-    startTransition(async () => {
-      const result = await recordSetAction(workoutId, sessionId, exerciseId, {
-        weight,
-        reps,
-      });
+    const submittedWeight = weight;
+    const submittedReps = reps;
+    const result = await onRecordSet(submittedWeight, submittedReps);
 
-      if (!result.success) {
-        setError(result.error);
-        return;
-      }
+    if (!result.success) {
+      setError(result.error);
+      return;
+    }
 
-      setSuccessMessage(`Série ${nextSetNumber} registrada — ${weight} kg × ${reps} reps`);
-      setReps("");
-      router.refresh();
-    });
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(10);
+    }
+
+    setSuccessMessage(
+      `Série ${nextSetNumber} registrada — ${submittedWeight} kg × ${submittedReps} reps`,
+    );
+    setReps("");
   }
 
   return (
@@ -172,7 +176,7 @@ export function SetLoggerForm({
               variant="outline"
               size="sm"
               onClick={handleRepeatLast}
-              disabled={isPending}
+              disabled={isSubmitting}
             >
               Repetir última
             </Button>
@@ -195,7 +199,7 @@ export function SetLoggerForm({
               label="Peso (kg)"
               value={weight}
               onStep={adjustWeight}
-              disabled={isPending}
+              disabled={isSubmitting}
               hasError={error !== null}
             />
             <StepperField
@@ -203,7 +207,7 @@ export function SetLoggerForm({
               label="Repetições"
               value={reps}
               onStep={adjustReps}
-              disabled={isPending}
+              disabled={isSubmitting}
               hasError={error !== null}
             />
           </div>
@@ -222,8 +226,14 @@ export function SetLoggerForm({
             ) : null}
           </div>
 
-          <Button className="w-full" size="lg" type="submit" disabled={isPending} aria-busy={isPending}>
-            {isPending ? "Salvando..." : "Registrar série"}
+          <Button
+            className="w-full"
+            size="lg"
+            type="submit"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? "Salvando..." : "Registrar série"}
           </Button>
 
           <Button
@@ -234,7 +244,7 @@ export function SetLoggerForm({
               <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
             }
             nativeButton={false}
-            disabled={isPending}
+            disabled={isSubmitting}
           >
             Finalizar exercício
           </Button>
