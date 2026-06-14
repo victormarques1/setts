@@ -8,7 +8,12 @@ export default async function WorkoutsPage() {
 
   return (
     <div className="page-shell">
-      <h1 className="page-title">Treinos</h1>
+      <div className="flex flex-col gap-2">
+        <h1 className="page-title">Treinos</h1>
+        <p className="page-subtitle">
+          Selecione um treino para ver os exercícios e iniciar uma sessão.
+        </p>
+      </div>
       <WorkoutList workouts={workouts} />
     </div>
   );

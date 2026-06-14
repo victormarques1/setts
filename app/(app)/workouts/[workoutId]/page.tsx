@@ -6,8 +6,8 @@ import { getCurrentUserId } from "@/lib/current-user";
 import { ExerciseList } from "@/modules/exercises/components/exercise-list";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
 import { ActiveSessionBanner } from "@/modules/sessions/components/active-session-banner";
+import { StartSessionBar } from "@/modules/sessions/components/start-session-bar";
 import { StartSessionButton } from "@/modules/sessions/components/start-session-button";
-import { StartSessionFab } from "@/modules/sessions/components/start-session-fab";
 import { sessionService } from "@/modules/sessions/services/session.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
@@ -28,7 +28,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
   const activeSession = await sessionService.getActiveSession(workoutId, userId);
 
   return (
-    <div className={exercises.length > 0 ? "page-shell page-shell-sticky-fab" : "page-shell"}>
+    <div className={exercises.length > 0 ? "page-shell page-shell-sticky-bar" : "page-shell"}>
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"
@@ -47,7 +47,11 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
               {workout.name}
             </h1>
             <p className="page-subtitle">
-              Exercícios deste treino.
+              {activeSession
+                ? "Exercícios deste treino."
+                : exercises.length > 0
+                  ? "Revise os exercícios e toque em Iniciar treino para registrar suas séries."
+                  : "Adicione exercícios para poder iniciar uma sessão."}
             </p>
           </div>
           <div className="hidden w-full flex-col gap-2 sm:flex sm:w-auto sm:items-end">
@@ -79,7 +83,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
       {exercises.length > 0 ? (
         <>
           {!activeSession ? (
-            <StartSessionFab workoutId={workoutId} />
+            <StartSessionBar workoutId={workoutId} />
           ) : null}
           <div className="flex flex-col gap-2 md:hidden">
             <Button

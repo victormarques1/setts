@@ -5,19 +5,16 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { startSessionAction } from "@/modules/sessions/actions/session.actions";
 
-type StartSessionFabProps = {
+type StartSessionBarProps = {
   workoutId: string;
 };
 
-export function StartSessionFab({ workoutId }: StartSessionFabProps) {
+export function StartSessionBar({ workoutId }: StartSessionBarProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  const label = "Iniciar treino";
 
   function handleStart() {
     setError(null);
@@ -36,29 +33,24 @@ export function StartSessionFab({ workoutId }: StartSessionFabProps) {
   }
 
   return (
-    <>
-      <Button
-        type="button"
-        className={cn(
-          "fixed-above-nav-fab",
-          isPending && "pointer-events-none opacity-70",
-        )}
-        size="icon-lg"
-        onClick={handleStart}
-        disabled={isPending}
-        aria-label={isPending ? "Abrindo treino..." : label}
-        aria-busy={isPending}
-      >
-        <Play className="size-6 fill-current" aria-hidden="true" />
-      </Button>
-      {error ? (
-        <p
-          className="fixed-above-nav-error text-sm text-destructive md:hidden"
-          role="alert"
+    <div className="fixed-above-nav-bar sm:hidden">
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-2">
+        <Button
+          className="w-full"
+          size="lg"
+          onClick={handleStart}
+          disabled={isPending}
+          aria-busy={isPending}
         >
-          {error}
-        </p>
-      ) : null}
-    </>
+          <Play className="size-5 fill-current" aria-hidden="true" />
+          {isPending ? "Abrindo..." : "Iniciar treino"}
+        </Button>
+        {error ? (
+          <p className="text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    </div>
   );
 }
