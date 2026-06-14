@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+---
+
+# Projeto
+
+Aplicação para registro de progressão de carga em academia.
+
+## Regras
+
+- Sempre utilizar TypeScript.
+- Nunca utilizar any.
+- Utilizar Server Actions antes de criar APIs.
+- Utilizar Prisma para acesso ao banco.
+- Validar entradas com Zod.
+- Componentes devem ser pequenos.
+- Evitar lógica de negócio em componentes React.
+- Regras de negócio devem ficar em services.
+- Acesso ao banco deve ficar em repositories.
+
+## Estrutura
+
+modules/
+actions/
+services/
+repositories/
+validations/
+components/
+
+## Banco
+
+A fonte da verdade é o schema Prisma.
+
+## MVP
+
+O foco é:
+
+- treinos
+- exercícios
+- séries
+- carga
+- repetições
+- histórico
+
+Não implementar funcionalidades fora do MVP sem solicitação explícita.
