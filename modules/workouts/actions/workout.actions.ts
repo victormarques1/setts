@@ -10,8 +10,13 @@ import {
   type ActionResult,
 } from "@/lib/action-result";
 import { getCurrentUserId } from "@/lib/current-user";
+import { WorkoutNotFoundError } from "@/modules/exercises/services/exercise.service";
+import { updateWorkoutService } from "@/modules/workouts/services/update-workout.service";
 import { workoutService } from "@/modules/workouts/services/workout.service";
-import type { CreateWorkoutFormInput } from "@/modules/workouts/validations/workout.schema";
+import type {
+  CreateWorkoutFormInput,
+  UpdateWorkoutFormInput,
+} from "@/modules/workouts/validations/workout.schema";
 
 export async function listWorkoutsAction(): Promise<ActionResult<Workout[]>> {
   try {
@@ -37,5 +42,31 @@ export async function createWorkoutAction(
     }
 
     return actionError("Não foi possível criar o treino.");
+  }
+}
+
+export async function updateWorkoutAction(
+  workoutId: string,
+  input: UpdateWorkoutFormInput,
+): Promise<ActionResult<Workout>> {
+  try {
+    const userId = await getCurrentUserId();
+    const workout = await updateWorkoutService.update(
+      { ...input, id: workoutId },
+      userId,
+    );
+    revalidatePath("/workouts");
+    revalidatePath(`/workouts/${workoutId}`);
+    return actionSuccess(workout);
+  } catch (error) {
+    if (error instanceof WorkoutNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof z.ZodError) {
+      return actionError(error.issues[0]?.message ?? "Dados inválidos.");
+    }
+
+    return actionError("Não foi possível atualizar o treino.");
   }
 }
