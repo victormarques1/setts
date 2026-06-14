@@ -50,7 +50,7 @@ export function CompletedSessionList({ sessions }: CompletedSessionListProps) {
             className="block"
           >
             <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
-              <CardContent className="flex min-h-11 flex-col justify-center gap-1 px-4 py-0 sm:px-6">
+              <CardContent className="flex min-h-11 flex-col justify-center gap-1 py-0">
                 <span className="min-w-0 truncate font-medium">
                   {session.workoutName}
                 </span>

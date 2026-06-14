@@ -40,7 +40,7 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
         <li key={workout.id}>
           <Link href={`/workouts/${workout.id}`} className="block">
             <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
-              <CardContent className="flex min-h-11 items-center px-4 py-0 sm:px-6">
+              <CardContent className="flex min-h-11 items-center py-0">
                 <span className="min-w-0 truncate font-medium">{workout.name}</span>
               </CardContent>
             </Card>

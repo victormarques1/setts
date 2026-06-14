@@ -34,7 +34,7 @@ export function SetRecordList({ sets }: SetRecordListProps) {
         {sets.map((set) => (
           <li key={set.id}>
             <Card className="min-h-11 py-3">
-              <CardContent className="flex min-h-11 items-center justify-between gap-3 px-4 py-0 text-sm sm:px-6">
+              <CardContent className="flex min-h-11 items-center justify-between gap-3 py-0 text-sm">
                 <span className="font-medium">Série {set.setNumber}</span>
                 <span className="text-muted-foreground shrink-0">
                   {set.weight} kg × {set.reps} reps

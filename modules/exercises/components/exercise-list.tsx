@@ -42,7 +42,7 @@ export function ExerciseList({ workoutId, exercises }: ExerciseListProps) {
       {exercises.map((exercise) => (
         <li key={exercise.id}>
           <Card className="min-h-11 py-4">
-            <CardContent className="flex min-h-11 items-center px-4 py-0 sm:px-6">
+            <CardContent className="flex min-h-11 items-center py-0">
               <span className="min-w-0 truncate font-medium">{exercise.name}</span>
             </CardContent>
           </Card>

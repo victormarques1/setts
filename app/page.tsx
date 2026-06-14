@@ -7,7 +7,7 @@ export default async function Home() {
   const session = await auth();
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 sm:py-24">
+    <div className="flex flex-1 flex-col items-center justify-center shell-x py-12 sm:py-24">
       <main className="flex w-full max-w-lg flex-col items-center gap-6 text-center sm:gap-8">
         <div className="flex flex-col gap-3">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">weightzz</h1>
