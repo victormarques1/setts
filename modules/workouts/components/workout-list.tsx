@@ -17,7 +17,7 @@ type WorkoutListProps = {
 export function WorkoutList({ workouts }: WorkoutListProps) {
   if (workouts.length === 0) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Nenhum treino cadastrado</CardTitle>
           <CardDescription>
@@ -35,13 +35,13 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
   }
 
   return (
-    <ul className="flex w-full max-w-lg flex-col gap-3">
+    <ul className="flex w-full flex-col gap-3">
       {workouts.map((workout) => (
         <li key={workout.id}>
-          <Link href={`/workouts/${workout.id}`}>
-            <Card className="py-4 transition-colors hover:bg-muted/50">
-              <CardContent className="flex items-center justify-between gap-4 px-6 py-0">
-                <span className="font-medium">{workout.name}</span>
+          <Link href={`/workouts/${workout.id}`} className="block">
+            <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
+              <CardContent className="flex min-h-11 items-center px-4 py-0 sm:px-6">
+                <span className="min-w-0 truncate font-medium">{workout.name}</span>
               </CardContent>
             </Card>
           </Link>

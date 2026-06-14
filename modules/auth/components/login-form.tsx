@@ -90,7 +90,7 @@ export function LoginForm({ callbackUrl = "/workouts" }: LoginFormProps) {
             </p>
           ) : null}
           <div className="flex flex-col gap-2">
-            <Button type="submit" disabled={isPending}>
+            <Button className="w-full" type="submit" disabled={isPending}>
               {isPending ? "Entrando..." : "Entrar"}
             </Button>
             <p className="text-muted-foreground text-sm">

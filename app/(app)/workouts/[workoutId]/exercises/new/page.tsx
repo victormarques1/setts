@@ -20,21 +20,21 @@ export default async function NewExercisePage({ params }: NewExercisePageProps) 
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
+    <div className="page-shell">
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"
-          className="w-fit px-0 hover:bg-transparent"
+          className="back-link"
           render={<Link href={`/workouts/${workoutId}`} />}
           nativeButton={false}
         >
           ← Voltar
         </Button>
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Criar exercício
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm sm:text-base">
             Adicione um exercício ao treino {workout.name}.
           </p>
         </div>

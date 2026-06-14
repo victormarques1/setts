@@ -26,10 +26,29 @@ export function ProgressHistoryTable({ progress }: ProgressHistoryTableProps) {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <h2 className="text-lg font-semibold">{progress.exerciseName}</h2>
-      <div className="overflow-hidden rounded-xl border border-border">
-        <table className="w-full text-sm">
+    <div className="flex w-full min-w-0 flex-col gap-4">
+      <h2 className="text-base font-semibold sm:text-lg">
+        {progress.exerciseName}
+      </h2>
+
+      {/* Mobile: card list */}
+      <ul className="flex flex-col gap-2 sm:hidden">
+        {progress.history.map((entry, index) => (
+          <li
+            key={`${entry.date}-${index}`}
+            className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-border px-4 py-3 text-sm"
+          >
+            <span className="text-muted-foreground min-w-0 truncate">
+              {formatProgressDate(entry.date)}
+            </span>
+            <span className="shrink-0 font-medium">{entry.weight}kg</span>
+          </li>
+        ))}
+      </ul>
+
+      {/* Desktop/tablet: table with horizontal scroll fallback */}
+      <div className="hidden overflow-x-auto rounded-xl border border-border sm:block">
+        <table className="w-full min-w-[280px] text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/40">
               <th className="px-4 py-3 text-left font-medium">Data</th>

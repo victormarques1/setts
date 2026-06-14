@@ -12,10 +12,10 @@ export default async function ProgressPage() {
     : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
+    <div className="page-shell">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Progressão</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Progressão</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Acompanhe a evolução da carga em cada exercício.
         </p>
       </div>

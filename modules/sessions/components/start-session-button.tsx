@@ -36,8 +36,8 @@ export function StartSessionButton({
   }
 
   return (
-    <div className="flex flex-col items-end gap-2">
-      <Button onClick={handleStart} disabled={isPending}>
+    <div className="flex w-full flex-col gap-2 sm:items-end">
+      <Button className="w-full sm:w-auto" onClick={handleStart} disabled={isPending}>
         {isPending
           ? "Abrindo..."
           : hasActiveSession

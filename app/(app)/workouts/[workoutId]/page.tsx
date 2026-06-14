@@ -26,26 +26,26 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
   const activeSession = await sessionService.getActiveSession(workoutId, userId);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
+    <div className="page-shell">
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"
-          className="w-fit px-0 hover:bg-transparent"
+          className="back-link"
           render={<Link href="/workouts" />}
           nativeButton={false}
         >
           ← Voltar
         </Button>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-semibold tracking-tight">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex min-w-0 flex-col gap-2">
+            <h1 className="text-2xl font-semibold tracking-tight break-words sm:text-3xl">
               {workout.name}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm sm:text-base">
               Exercícios deste treino.
             </p>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
             {exercises.length > 0 ? (
               <StartSessionButton
                 workoutId={workoutId}
@@ -54,6 +54,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
             ) : null}
             {exercises.length > 0 ? (
               <Button
+                className="w-full sm:w-auto"
                 variant="outline"
                 render={
                   <Link href={`/workouts/${workoutId}/exercises/new`} />

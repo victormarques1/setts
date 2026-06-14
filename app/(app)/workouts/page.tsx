@@ -10,16 +10,20 @@ export default async function WorkoutsPage() {
   const workouts = await workoutService.listByUserId(userId);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold tracking-tight">Treinos</h1>
-          <p className="text-muted-foreground">
+    <div className="page-shell">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Treinos</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Gerencie seus treinos e organize seus exercícios.
           </p>
         </div>
         {workouts.length > 0 ? (
-          <Button render={<Link href="/workouts/new" />} nativeButton={false}>
+          <Button
+            className="w-full shrink-0 sm:w-auto"
+            render={<Link href="/workouts/new" />}
+            nativeButton={false}
+          >
             Novo treino
           </Button>
         ) : null}

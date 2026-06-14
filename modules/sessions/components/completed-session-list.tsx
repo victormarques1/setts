@@ -24,7 +24,7 @@ function formatSessionDate(date: Date) {
 export function CompletedSessionList({ sessions }: CompletedSessionListProps) {
   if (sessions.length === 0) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Nenhum treino finalizado</CardTitle>
           <CardDescription>
@@ -42,16 +42,19 @@ export function CompletedSessionList({ sessions }: CompletedSessionListProps) {
   }
 
   return (
-    <ul className="flex w-full max-w-lg flex-col gap-3">
+    <ul className="flex w-full flex-col gap-3">
       {sessions.map((session) => (
         <li key={session.id}>
           <Link
             href={`/workouts/${session.workoutId}/sessions/${session.id}`}
+            className="block"
           >
-            <Card className="py-4 transition-colors hover:bg-muted/50">
-              <CardContent className="flex flex-col gap-1 px-6 py-0">
-                <span className="font-medium">{session.workoutName}</span>
-                <span className="text-sm text-muted-foreground">
+            <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
+              <CardContent className="flex min-h-11 flex-col justify-center gap-1 px-4 py-0 sm:px-6">
+                <span className="min-w-0 truncate font-medium">
+                  {session.workoutName}
+                </span>
+                <span className="text-muted-foreground text-sm">
                   {formatSessionDate(session.performedAt)}
                 </span>
               </CardContent>

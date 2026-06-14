@@ -49,7 +49,7 @@ export function CreateExerciseForm({ workoutId }: CreateExerciseFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Novo exercício</CardTitle>
         <CardDescription>
@@ -75,11 +75,12 @@ export function CreateExerciseForm({ workoutId }: CreateExerciseFormProps) {
               </p>
             ) : null}
           </div>
-          <div className="flex gap-2">
-            <Button type="submit" disabled={isPending}>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button className="w-full sm:w-auto" type="submit" disabled={isPending}>
               {isPending ? "Salvando..." : "Criar exercício"}
             </Button>
             <Button
+              className="w-full sm:w-auto"
               variant="outline"
               render={<Link href={`/workouts/${workoutId}`} />}
               nativeButton={false}

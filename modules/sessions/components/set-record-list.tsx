@@ -14,7 +14,7 @@ type SetRecordListProps = {
 export function SetRecordList({ sets }: SetRecordListProps) {
   if (sets.length === 0) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Nenhuma série registrada</CardTitle>
           <CardDescription>
@@ -26,17 +26,17 @@ export function SetRecordList({ sets }: SetRecordListProps) {
   }
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-3">
+    <div className="flex w-full flex-col gap-3">
       <h2 className="text-sm font-medium text-muted-foreground">
         Séries registradas
       </h2>
       <ul className="flex flex-col gap-2">
         {sets.map((set) => (
           <li key={set.id}>
-            <Card className="py-3">
-              <CardContent className="flex items-center justify-between gap-4 px-6 py-0 text-sm">
+            <Card className="min-h-11 py-3">
+              <CardContent className="flex min-h-11 items-center justify-between gap-3 px-4 py-0 text-sm sm:px-6">
                 <span className="font-medium">Série {set.setNumber}</span>
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground shrink-0">
                   {set.weight} kg × {set.reps} reps
                 </span>
               </CardContent>

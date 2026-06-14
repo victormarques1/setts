@@ -45,7 +45,7 @@ export function CreateWorkoutForm() {
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Novo treino</CardTitle>
         <CardDescription>
@@ -71,11 +71,16 @@ export function CreateWorkoutForm() {
               </p>
             ) : null}
           </div>
-          <div className="flex gap-2">
-            <Button type="submit" disabled={isPending}>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button className="w-full sm:w-auto" type="submit" disabled={isPending}>
               {isPending ? "Salvando..." : "Criar treino"}
             </Button>
-            <Button variant="outline" render={<Link href="/workouts" />} nativeButton={false}>
+            <Button
+              className="w-full sm:w-auto"
+              variant="outline"
+              render={<Link href="/workouts" />}
+              nativeButton={false}
+            >
               Cancelar
             </Button>
           </div>

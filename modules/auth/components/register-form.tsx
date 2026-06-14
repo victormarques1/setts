@@ -107,7 +107,7 @@ export function RegisterForm() {
             </p>
           ) : null}
           <div className="flex flex-col gap-2">
-            <Button type="submit" disabled={isPending}>
+            <Button className="w-full" type="submit" disabled={isPending}>
               {isPending ? "Cadastrando..." : "Criar conta"}
             </Button>
             <p className="text-muted-foreground text-sm">

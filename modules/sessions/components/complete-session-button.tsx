@@ -36,7 +36,7 @@ export function CompleteSessionButton({
   }
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       <Button
         className="w-full"
         variant="secondary"

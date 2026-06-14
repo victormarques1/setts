@@ -59,7 +59,7 @@ export function SetLoggerForm({
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Registrar série {nextSetNumber}</CardTitle>
         <CardDescription>
@@ -68,7 +68,7 @@ export function SetLoggerForm({
       </CardHeader>
       <CardContent>
         <form action={handleSubmit} className="flex flex-col gap-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="weight">Peso (kg)</Label>
               <Input
@@ -105,7 +105,7 @@ export function SetLoggerForm({
               {error}
             </p>
           ) : null}
-          <Button type="submit" disabled={isPending}>
+          <Button className="w-full" type="submit" disabled={isPending}>
             {isPending ? "Salvando..." : "Registrar série"}
           </Button>
         </form>

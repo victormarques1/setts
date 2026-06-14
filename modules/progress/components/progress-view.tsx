@@ -57,7 +57,7 @@ export function ProgressView({
 
   if (exercises.length === 0) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Nenhum exercício cadastrado</CardTitle>
           <CardDescription>
@@ -88,7 +88,7 @@ export function ProgressView({
                   onClick={() => handleSelectExercise(exercise.id)}
                   disabled={isPending && isSelected}
                   className={cn(
-                    "w-full rounded-xl border px-4 py-3 text-left transition-colors",
+                    "min-h-11 w-full rounded-xl border px-4 py-3 text-left transition-colors",
                     isSelected
                       ? "border-primary bg-primary/10"
                       : "border-border hover:bg-muted/50",

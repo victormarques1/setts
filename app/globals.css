@@ -121,10 +121,28 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
-    @apply font-sans;
+    @apply font-sans overflow-x-hidden;
+  }
+  body {
+    @apply bg-background text-foreground overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .page-shell {
+    @apply mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-8 md:py-12;
+  }
+
+  .page-shell-auth {
+    @apply mx-auto flex w-full max-w-lg flex-col gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-8 md:py-12;
+  }
+
+  .back-link {
+    @apply min-h-11 w-fit -ml-2 px-3 hover:bg-transparent;
+  }
+
+  .touch-target {
+    @apply min-h-11;
   }
 }

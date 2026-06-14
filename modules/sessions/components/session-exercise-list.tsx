@@ -26,7 +26,7 @@ export function SessionExerciseList({
 }: SessionExerciseListProps) {
   if (exercises.length === 0) {
     return (
-      <Card className="w-full max-w-lg">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Nenhum exercício cadastrado</CardTitle>
           <CardDescription>
@@ -46,7 +46,7 @@ export function SessionExerciseList({
   );
 
   return (
-    <ul className="flex w-full max-w-lg flex-col gap-3">
+    <ul className="flex w-full flex-col gap-3">
       {exercises.map((exercise) => {
         const setCount = setCountByExercise[exercise.id] ?? 0;
 
@@ -54,11 +54,14 @@ export function SessionExerciseList({
           <li key={exercise.id}>
             <Link
               href={`/workouts/${workoutId}/sessions/${sessionId}/exercises/${exercise.id}`}
+              className="block"
             >
-              <Card className="py-4 transition-colors hover:bg-muted/50">
-                <CardContent className="flex items-center justify-between gap-4 px-6 py-0">
-                  <span className="font-medium">{exercise.name}</span>
-                  <span className="text-sm text-muted-foreground">
+              <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
+                <CardContent className="flex min-h-11 items-center justify-between gap-3 px-4 py-0 sm:px-6">
+                  <span className="min-w-0 truncate font-medium">
+                    {exercise.name}
+                  </span>
+                  <span className="text-muted-foreground shrink-0 text-sm">
                     {setCount === 0
                       ? isActive
                         ? "Registrar séries"
