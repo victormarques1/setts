@@ -278,6 +278,10 @@
     @apply min-h-11 w-fit -ml-1 px-2 text-muted-foreground hover:bg-transparent hover:text-foreground;
   }
 
+  .back-link-hint {
+    @apply -ml-1 max-w-[16rem] px-2 text-xs leading-snug text-muted-foreground/80 sm:max-w-xs;
+  }
+
   .touch-target {
     @apply min-h-11;
   }
