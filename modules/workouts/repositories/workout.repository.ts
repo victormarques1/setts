@@ -15,6 +15,12 @@ export const workoutRepository = {
     });
   },
 
+  findByIdForUser(id: string, userId: string) {
+    return prisma.workout.findFirst({
+      where: { id, userId },
+    });
+  },
+
   create(data: CreateWorkoutInput) {
     return prisma.workout.create({ data });
   },

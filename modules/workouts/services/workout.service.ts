@@ -15,6 +15,10 @@ export const workoutService = {
     return workoutRepository.findById(id);
   },
 
+  getByIdForUser(id: string, userId: string) {
+    return workoutRepository.findByIdForUser(id, userId);
+  },
+
   create(input: CreateWorkoutInput) {
     const data = createWorkoutSchema.parse(input);
     return workoutRepository.create(data);

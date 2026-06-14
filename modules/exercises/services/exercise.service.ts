@@ -5,6 +5,14 @@ import {
   type CreateExerciseInput,
   type UpdateExerciseInput,
 } from "@/modules/exercises/validations/exercise.schema";
+import { workoutRepository } from "@/modules/workouts/repositories/workout.repository";
+
+export class WorkoutNotFoundError extends Error {
+  constructor() {
+    super("Treino não encontrado.");
+    this.name = "WorkoutNotFoundError";
+  }
+}
 
 export const exerciseService = {
   listByWorkoutId(workoutId: string) {
@@ -15,8 +23,17 @@ export const exerciseService = {
     return exerciseRepository.findById(id);
   },
 
-  create(input: CreateExerciseInput) {
+  async create(input: CreateExerciseInput, userId: string) {
     const data = createExerciseSchema.parse(input);
+    const workout = await workoutRepository.findByIdForUser(
+      data.workoutId,
+      userId,
+    );
+
+    if (!workout) {
+      throw new WorkoutNotFoundError();
+    }
+
     return exerciseRepository.create(data);
   },
 

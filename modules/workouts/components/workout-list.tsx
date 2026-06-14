@@ -38,11 +38,13 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
     <ul className="flex w-full max-w-lg flex-col gap-3">
       {workouts.map((workout) => (
         <li key={workout.id}>
-          <Card className="py-4">
-            <CardContent className="flex items-center justify-between gap-4 px-6 py-0">
-              <span className="font-medium">{workout.name}</span>
-            </CardContent>
-          </Card>
+          <Link href={`/workouts/${workout.id}`}>
+            <Card className="py-4 transition-colors hover:bg-muted/50">
+              <CardContent className="flex items-center justify-between gap-4 px-6 py-0">
+                <span className="font-medium">{workout.name}</span>
+              </CardContent>
+            </Card>
+          </Link>
         </li>
       ))}
     </ul>
