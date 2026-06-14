@@ -1,6 +1,3 @@
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
 import { CompletedSessionList } from "@/modules/sessions/components/completed-session-list";
 import { sessionService } from "@/modules/sessions/services/session.service";
@@ -11,21 +8,11 @@ export default async function HistoryPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-6 py-12">
-      <div className="flex flex-col gap-4">
-        <Button
-          variant="ghost"
-          className="w-fit px-0 hover:bg-transparent"
-          render={<Link href="/workouts" />}
-          nativeButton={false}
-        >
-          ← Voltar
-        </Button>
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold tracking-tight">Histórico</h1>
-          <p className="text-muted-foreground">
-            Treinos finalizados com data de conclusão.
-          </p>
-        </div>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-semibold tracking-tight">Histórico</h1>
+        <p className="text-muted-foreground">
+          Treinos finalizados com data de conclusão.
+        </p>
       </div>
       <CompletedSessionList sessions={sessions} />
     </div>
