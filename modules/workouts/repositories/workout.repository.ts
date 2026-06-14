@@ -1,3 +1,4 @@
+import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { CreateWorkoutInput } from "@/modules/workouts/validations/workout.schema";
 
@@ -6,6 +7,29 @@ export const workoutRepository = {
     return prisma.workout.findMany({
       where: { userId },
       orderBy: { name: "asc" },
+    });
+  },
+
+  findSummariesByUserId(userId: string) {
+    return prisma.workout.findMany({
+      where: { userId },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: { exercises: true },
+        },
+        sessions: {
+          where: {
+            status: WorkoutSessionStatus.COMPLETED,
+            performedAt: { not: null },
+          },
+          orderBy: { performedAt: "desc" },
+          take: 1,
+          select: { performedAt: true },
+        },
+      },
     });
   },
 

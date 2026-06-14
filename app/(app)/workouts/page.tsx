@@ -7,7 +7,7 @@ import { workoutService } from "@/modules/workouts/services/workout.service";
 
 export default async function WorkoutsPage() {
   const userId = await getCurrentUserId();
-  const workouts = await workoutService.listByUserId(userId);
+  const workouts = await workoutService.listSummariesByUserId(userId);
 
   return (
     <div className="page-shell">

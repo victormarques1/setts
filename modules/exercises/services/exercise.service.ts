@@ -20,6 +20,15 @@ export type UserExerciseSummary = {
   workoutName: string;
 };
 
+export type ExerciseSummary = {
+  id: string;
+  name: string;
+  lastLoad: {
+    weight: number;
+    reps: number;
+  } | null;
+};
+
 export const exerciseService = {
   async listByUserId(userId: string): Promise<UserExerciseSummary[]> {
     const exercises = await exerciseRepository.findByUserId(userId);
@@ -33,6 +42,33 @@ export const exerciseService = {
 
   listByWorkoutId(workoutId: string) {
     return exerciseRepository.findByWorkoutId(workoutId);
+  },
+
+  async listSummariesByWorkoutId(workoutId: string): Promise<ExerciseSummary[]> {
+    const [exercises, setRecords] = await Promise.all([
+      exerciseRepository.findByWorkoutId(workoutId),
+      exerciseRepository.findLastSetRecordsByWorkoutId(workoutId),
+    ]);
+
+    const lastLoadByExerciseId = new Map<
+      string,
+      { weight: number; reps: number }
+    >();
+
+    for (const record of setRecords) {
+      if (!lastLoadByExerciseId.has(record.exerciseId)) {
+        lastLoadByExerciseId.set(record.exerciseId, {
+          weight: record.weight,
+          reps: record.reps,
+        });
+      }
+    }
+
+    return exercises.map((exercise) => ({
+      id: exercise.id,
+      name: exercise.name,
+      lastLoad: lastLoadByExerciseId.get(exercise.id) ?? null,
+    }));
   },
 
   getById(id: string) {

@@ -23,7 +23,7 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
     notFound();
   }
 
-  const exercises = await exerciseService.listByWorkoutId(workoutId);
+  const exercises = await exerciseService.listSummariesByWorkoutId(workoutId);
   const activeSession = await sessionService.getActiveSession(workoutId, userId);
 
   return (

@@ -6,9 +6,27 @@ import {
   type UpdateWorkoutInput,
 } from "@/modules/workouts/validations/workout.schema";
 
+export type WorkoutSummary = {
+  id: string;
+  name: string;
+  exerciseCount: number;
+  lastSessionAt: Date | null;
+};
+
 export const workoutService = {
   listByUserId(userId: string) {
     return workoutRepository.findByUserId(userId);
+  },
+
+  async listSummariesByUserId(userId: string): Promise<WorkoutSummary[]> {
+    const workouts = await workoutRepository.findSummariesByUserId(userId);
+
+    return workouts.map((workout) => ({
+      id: workout.id,
+      name: workout.name,
+      exerciseCount: workout._count.exercises,
+      lastSessionAt: workout.sessions[0]?.performedAt ?? null,
+    }));
   },
 
   getById(id: string) {

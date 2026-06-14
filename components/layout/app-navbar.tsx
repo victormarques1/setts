@@ -4,6 +4,7 @@ import { Dumbbell, History, TrendingUp, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { AppLogo } from "@/components/layout/app-logo";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/modules/auth/components/logout-button";
 
@@ -99,12 +100,7 @@ export function AppNavbar({ userName }: AppNavbarProps) {
     <>
       <header className="sticky top-0 z-50 border-b border-border bg-background/95 pt-[env(safe-area-inset-top,0px)] backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="shell-x mx-auto flex h-12 max-w-2xl items-center justify-between gap-3 sm:h-14">
-          <Link
-            href="/workouts"
-            className="text-primary shrink-0 text-base font-semibold tracking-tight sm:text-lg"
-          >
-            weightzz
-          </Link>
+          <AppLogo href="/workouts" />
 
           <nav
             aria-label="Navegação principal"

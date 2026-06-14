@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import type { Workout } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +8,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { WorkoutSummary } from "@/modules/workouts/services/workout.service";
 
 type WorkoutListProps = {
-  workouts: Workout[];
+  workouts: WorkoutSummary[];
 };
+
+function formatExerciseCount(count: number) {
+  if (count === 1) {
+    return "1 exercício";
+  }
+
+  return `${count} exercícios`;
+}
+
+function formatLastSessionDate(date: Date) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "medium",
+  }).format(date);
+}
+
+function formatLastSession(lastSessionAt: Date | null) {
+  if (!lastSessionAt) {
+    return "Nenhuma sessão realizada";
+  }
+
+  return `Última sessão: ${formatLastSessionDate(lastSessionAt)}`;
+}
 
 export function WorkoutList({ workouts }: WorkoutListProps) {
   if (workouts.length === 0) {
@@ -40,8 +62,14 @@ export function WorkoutList({ workouts }: WorkoutListProps) {
         <li key={workout.id}>
           <Link href={`/workouts/${workout.id}`} className="block">
             <Card className="min-h-11 py-4 transition-colors hover:bg-muted/50 active:bg-muted/50">
-              <CardContent className="flex min-h-11 items-center py-0">
-                <span className="min-w-0 truncate font-medium">{workout.name}</span>
+              <CardContent className="flex min-h-11 flex-col justify-center gap-1 py-0">
+                <span className="min-w-0 truncate font-medium" title={workout.name}>
+                  {workout.name}
+                </span>
+                <span className="text-muted-foreground text-sm">
+                  {formatExerciseCount(workout.exerciseCount)} ·{" "}
+                  {formatLastSession(workout.lastSessionAt)}
+                </span>
               </CardContent>
             </Card>
           </Link>

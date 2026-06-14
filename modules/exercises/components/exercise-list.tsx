@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import type { Exercise } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,11 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { ExerciseSummary } from "@/modules/exercises/services/exercise.service";
 
 type ExerciseListProps = {
   workoutId: string;
-  exercises: Exercise[];
+  exercises: ExerciseSummary[];
 };
+
+function formatWeight(weight: number) {
+  return Number.isInteger(weight) ? String(weight) : weight.toFixed(1);
+}
+
+function formatLastLoad(lastLoad: ExerciseSummary["lastLoad"]) {
+  if (!lastLoad) {
+    return "sem registro";
+  }
+
+  return `${formatWeight(lastLoad.weight)} kg × ${lastLoad.reps} reps`;
+}
 
 export function ExerciseList({ workoutId, exercises }: ExerciseListProps) {
   if (exercises.length === 0) {
@@ -42,8 +54,13 @@ export function ExerciseList({ workoutId, exercises }: ExerciseListProps) {
       {exercises.map((exercise) => (
         <li key={exercise.id}>
           <Card className="min-h-11 py-4">
-            <CardContent className="flex min-h-11 items-center py-0">
-              <span className="min-w-0 truncate font-medium">{exercise.name}</span>
+            <CardContent className="flex min-h-11 flex-col justify-center gap-1 py-0">
+              <span className="min-w-0 truncate font-medium" title={exercise.name}>
+                {exercise.name}
+              </span>
+              <span className="text-muted-foreground text-sm">
+                Última carga: {formatLastLoad(exercise.lastLoad)}
+              </span>
             </CardContent>
           </Card>
         </li>
