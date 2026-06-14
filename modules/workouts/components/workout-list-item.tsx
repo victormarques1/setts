@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Pencil, Trash2 } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { EditActionButton } from "@/components/actions/edit-action-button";
+import { DeleteActionButton } from "@/components/actions/delete-action-button";
 import { DeleteWorkoutDialog } from "@/modules/workouts/components/delete-workout-dialog";
 import { EditWorkoutDialog } from "@/modules/workouts/components/edit-workout-dialog";
 import type { WorkoutSummary } from "@/modules/workouts/services/workout.service";
@@ -61,24 +62,14 @@ export function WorkoutListItem({ workout }: WorkoutListItemProps) {
                   {formatLastSession(workout.lastSessionAt)}
                 </span>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Editar ${workout.name}`}
+              <EditActionButton
+                entityName={workout.name}
                 onClick={() => setIsEditOpen(true)}
-              >
-                <Pencil aria-hidden="true" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Excluir ${workout.name}`}
+              />
+              <DeleteActionButton
+                entityName={workout.name}
                 onClick={() => setIsDeleteOpen(true)}
-              >
-                <Trash2 aria-hidden="true" />
-              </Button>
+              />
               <Link
                 href={`/workouts/${workout.id}`}
                 className="text-muted-foreground rounded-lg focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"

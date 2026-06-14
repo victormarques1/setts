@@ -1,9 +1,9 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { EditActionButton } from "@/components/actions/edit-action-button";
+import { DeleteActionButton } from "@/components/actions/delete-action-button";
 import { formatWeight } from "@/lib/format-weight";
 import { DeleteExerciseDialog } from "@/modules/exercises/components/delete-exercise-dialog";
 import { EditExerciseDialog } from "@/modules/exercises/components/edit-exercise-dialog";
@@ -62,24 +62,14 @@ export function ExerciseListItem({ workoutId, exercise }: ExerciseListItemProps)
                   Sem registro
                 </span>
               )}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Editar ${exercise.name}`}
+              <EditActionButton
+                entityName={exercise.name}
                 onClick={() => setIsEditOpen(true)}
-              >
-                <Pencil aria-hidden="true" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Excluir ${exercise.name}`}
+              />
+              <DeleteActionButton
+                entityName={exercise.name}
                 onClick={() => setIsDeleteOpen(true)}
-              >
-                <Trash2 aria-hidden="true" />
-              </Button>
+              />
             </div>
           </div>
         </div>
