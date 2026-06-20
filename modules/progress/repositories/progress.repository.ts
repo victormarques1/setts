@@ -1,4 +1,5 @@
 import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
+import { formatDateOnlyBrasilia } from "@/lib/format-datetime";
 import { prisma } from "@/lib/prisma";
 
 export type ExerciseProgressPoint = {
@@ -7,13 +8,6 @@ export type ExerciseProgressPoint = {
   reps: number;
   volume: number;
 };
-
-function formatDateOnly(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 export const progressRepository = {
   async getExerciseProgress(
@@ -51,7 +45,7 @@ export const progressRepository = {
 
       return [
         {
-          date: formatDateOnly(session.performedAt),
+          date: formatDateOnlyBrasilia(session.performedAt),
           weight: bestSet.weight,
           reps: bestSet.reps,
           volume,

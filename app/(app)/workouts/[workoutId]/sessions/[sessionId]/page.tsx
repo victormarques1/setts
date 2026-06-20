@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { WorkoutSessionStatus } from "@/app/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
+import { formatSessionPerformedAtFull } from "@/lib/format-datetime";
 import { getCachedSessionForUser } from "@/lib/cached-session";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
 import { CancelSessionButton } from "@/modules/sessions/components/cancel-session-button";
@@ -15,13 +16,6 @@ import { workoutService } from "@/modules/workouts/services/workout.service";
 type SessionPageProps = {
   params: Promise<{ workoutId: string; sessionId: string }>;
 };
-
-function formatSessionDate(date: Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "full",
-    timeStyle: "short",
-  }).format(date);
-}
 
 export default async function SessionPage({ params }: SessionPageProps) {
   const { workoutId, sessionId } = await params;
@@ -96,7 +90,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
               {isActive
                 ? "Treino em andamento."
                 : session.performedAt
-                  ? `Finalizado em ${formatSessionDate(session.performedAt)}`
+                  ? `Finalizado em ${formatSessionPerformedAtFull(session.performedAt)}`
                   : "Treino finalizado"}
             </p>
           </div>

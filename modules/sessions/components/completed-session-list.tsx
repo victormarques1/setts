@@ -2,27 +2,15 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  formatSessionPerformedAt,
+  formatSessionPerformedAtShort,
+} from "@/lib/format-datetime";
 import type { CompletedSessionSummary } from "@/modules/sessions/services/session.service";
 
 type CompletedSessionListProps = {
   sessions: CompletedSessionSummary[];
 };
-
-function formatSessionDate(date: Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "long",
-    timeStyle: "short",
-  }).format(date);
-}
-
-function formatSessionDateShort(date: Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
 
 export function CompletedSessionList({ sessions }: CompletedSessionListProps) {
   if (sessions.length === 0) {
@@ -58,16 +46,16 @@ export function CompletedSessionList({ sessions }: CompletedSessionListProps) {
                   </span>
                   <span
                     className="text-muted-foreground hidden text-xs sm:inline"
-                    title={formatSessionDate(session.performedAt)}
+                    title={formatSessionPerformedAt(session.performedAt)}
                   >
-                    {formatSessionDate(session.performedAt)}
+                    {formatSessionPerformedAt(session.performedAt)}
                   </span>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <div className="flex flex-col items-end gap-0.5 sm:hidden">
                     <span className="metric-label">Concluído</span>
                     <span className="text-sm font-semibold tabular-nums">
-                      {formatSessionDateShort(session.performedAt)}
+                      {formatSessionPerformedAtShort(session.performedAt)}
                     </span>
                   </div>
                   <ChevronRight

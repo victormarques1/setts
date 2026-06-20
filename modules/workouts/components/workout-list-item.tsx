@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
+import { formatLastSessionAt } from "@/lib/format-datetime";
 import { DeleteWorkoutDialog } from "@/modules/workouts/components/delete-workout-dialog";
 import { EditWorkoutDialog } from "@/modules/workouts/components/edit-workout-dialog";
 import { WorkoutItemMenu } from "@/modules/workouts/components/workout-item-menu";
@@ -19,16 +20,6 @@ function formatExerciseCount(count: number) {
   }
 
   return `${count} exercícios`;
-}
-
-function formatLastSession(lastSessionAt: Date | null) {
-  if (!lastSessionAt) {
-    return "Sem sessões";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "medium",
-  }).format(lastSessionAt);
 }
 
 export function WorkoutListItem({ workout }: WorkoutListItemProps) {
@@ -64,7 +55,9 @@ export function WorkoutListItem({ workout }: WorkoutListItemProps) {
                 <div className="flex flex-col items-end gap-0.5">
                   <span className="metric-label">Última sessão</span>
                   <span className="text-sm font-semibold tabular-nums">
-                    {formatLastSession(workout.lastSessionAt)}
+                    {workout.lastSessionAt
+                      ? formatLastSessionAt(workout.lastSessionAt)
+                      : "Sem sessões"}
                   </span>
                 </div>
                 <ChevronRight
