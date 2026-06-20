@@ -35,7 +35,7 @@ export async function createWorkoutAction(
   try {
     const userId = await getCurrentUserId();
     const workout = await workoutService.create({ ...input, userId });
-    revalidatePath("/workouts");
+    revalidatePath(`/workouts/${workout.id}`);
     return actionSuccess(workout);
   } catch (error) {
     if (error instanceof z.ZodError) {

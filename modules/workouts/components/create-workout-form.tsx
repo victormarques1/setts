@@ -39,7 +39,7 @@ export function CreateWorkoutForm() {
         return;
       }
 
-      router.push("/workouts");
+      router.push(`/workouts/${result.data.id}`);
       router.refresh();
     });
   }
