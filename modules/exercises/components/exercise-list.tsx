@@ -1,6 +1,4 @@
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
+import { AddExerciseButton } from "@/modules/exercises/components/add-exercise-button";
 import { ExerciseListItem } from "@/modules/exercises/components/exercise-list-item";
 import type { ExerciseSummary } from "@/modules/exercises/services/exercise.service";
 
@@ -16,16 +14,11 @@ export function ExerciseList({ workoutId, exercises }: ExerciseListProps) {
         <div className="flex flex-col gap-1.5">
           <p className="empty-state-title">Nenhum exercício cadastrado</p>
           <p className="empty-state-description">
-            Adicione exercícios a este treino para registrar séries e acompanhar
-            sua progressão de carga.
+            Adicione exercícios do catálogo ou crie personalizados para registrar
+            séries e acompanhar sua progressão de carga.
           </p>
         </div>
-        <Button
-          render={<Link href={`/workouts/${workoutId}/exercises/new`} />}
-          nativeButton={false}
-        >
-          Criar exercício
-        </Button>
+        <AddExerciseButton workoutId={workoutId} label="Adicionar exercício" />
       </div>
     );
   }

@@ -1,5 +1,9 @@
 import { exerciseRepository } from "@/modules/exercises/repositories/exercise.repository";
-import { WorkoutNotFoundError } from "@/modules/exercises/services/exercise.service";
+import { exerciseCatalogRepository } from "@/modules/exercises/repositories/exercise-catalog.repository";
+import {
+  ExerciseCatalogDuplicateError,
+  WorkoutNotFoundError,
+} from "@/modules/exercises/services/exercise.service";
 import {
   updateExerciseSchema,
   type UpdateExerciseInput,
@@ -10,6 +14,13 @@ export class ExerciseNotFoundError extends Error {
   constructor() {
     super("Exercício não encontrado.");
     this.name = "ExerciseNotFoundError";
+  }
+}
+
+export class ExerciseNotEditableError extends Error {
+  constructor() {
+    super("Exercícios do catálogo padrão não podem ser editados.");
+    this.name = "ExerciseNotEditableError";
   }
 }
 
@@ -36,6 +47,23 @@ export const updateExerciseService = {
       throw new ExerciseNotFoundError();
     }
 
-    return exerciseRepository.update(data.id, data.name);
+    if (!exercise.isCustom) {
+      throw new ExerciseNotEditableError();
+    }
+
+    const duplicate = await exerciseCatalogRepository.findCustomByNameForUser(
+      data.name,
+      userId,
+    );
+
+    if (duplicate && duplicate.id !== exercise.exerciseCatalogId) {
+      throw new ExerciseCatalogDuplicateError();
+    }
+
+    await exerciseCatalogRepository.update(exercise.exerciseCatalogId, {
+      name: data.name,
+    });
+
+    return exerciseRepository.findByIdForWorkout(data.id, workoutId);
   },
 };

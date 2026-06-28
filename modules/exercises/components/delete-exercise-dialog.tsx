@@ -18,12 +18,12 @@ export function DeleteExerciseDialog({
 }: DeleteExerciseDialogProps) {
   return (
     <ConfirmDeleteDialog
-      title="Excluir exercício"
-      description="Tem certeza que deseja excluir este exercício?"
+      title="Remover exercício"
+      description="Tem certeza que deseja remover este exercício do treino?"
       entityLabel="Exercício"
       entityName={exerciseName}
-      warning="Os registros históricos deste exercício também serão removidos."
-      successMessage="Exercício excluído com sucesso."
+      warning="Os registros históricos deste exercício neste treino também serão removidos."
+      successMessage="Exercício removido do treino."
       onClose={onClose}
       onConfirm={() => deleteExerciseAction(workoutId, exerciseId)}
     />

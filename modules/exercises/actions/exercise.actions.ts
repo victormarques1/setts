@@ -3,31 +3,30 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import type { Exercise } from "@/app/generated/prisma/client";
 import {
   actionError,
   actionSuccess,
   type ActionResult,
 } from "@/lib/action-result";
 import { getCurrentUserId } from "@/lib/current-user";
+import type { WorkoutExercise } from "@/modules/exercises/repositories/exercise.repository";
 import {
   exerciseService,
+  ExerciseCatalogDuplicateError,
   WorkoutNotFoundError,
 } from "@/modules/exercises/services/exercise.service";
 import { deleteExerciseService } from "@/modules/exercises/services/delete-exercise.service";
 import {
+  ExerciseNotEditableError,
   ExerciseNotFoundError,
   updateExerciseService,
 } from "@/modules/exercises/services/update-exercise.service";
-import type {
-  CreateExerciseFormInput,
-  UpdateExerciseFormInput,
-} from "@/modules/exercises/validations/exercise.schema";
+import type { UpdateExerciseFormInput } from "@/modules/exercises/validations/exercise.schema";
 import { workoutService } from "@/modules/workouts/services/workout.service";
 
 export async function listExercisesAction(
   workoutId: string,
-): Promise<ActionResult<Exercise[]>> {
+): Promise<ActionResult<WorkoutExercise[]>> {
   try {
     const userId = await getCurrentUserId();
     const workout = await workoutService.getByIdForUser(workoutId, userId);
@@ -43,36 +42,11 @@ export async function listExercisesAction(
   }
 }
 
-export async function createExerciseAction(
-  workoutId: string,
-  input: CreateExerciseFormInput,
-): Promise<ActionResult<Exercise>> {
-  try {
-    const userId = await getCurrentUserId();
-    const exercise = await exerciseService.create(
-      { ...input, workoutId },
-      userId,
-    );
-    revalidatePath(`/workouts/${workoutId}`);
-    return actionSuccess(exercise);
-  } catch (error) {
-    if (error instanceof WorkoutNotFoundError) {
-      return actionError(error.message);
-    }
-
-    if (error instanceof z.ZodError) {
-      return actionError(error.issues[0]?.message ?? "Dados inválidos.");
-    }
-
-    return actionError("Não foi possível criar o exercício.");
-  }
-}
-
 export async function updateExerciseAction(
   workoutId: string,
   exerciseId: string,
   input: UpdateExerciseFormInput,
-): Promise<ActionResult<Exercise>> {
+): Promise<ActionResult<WorkoutExercise | null>> {
   try {
     const userId = await getCurrentUserId();
     const exercise = await updateExerciseService.update(
@@ -88,6 +62,14 @@ export async function updateExerciseAction(
     }
 
     if (error instanceof ExerciseNotFoundError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof ExerciseNotEditableError) {
+      return actionError(error.message);
+    }
+
+    if (error instanceof ExerciseCatalogDuplicateError) {
       return actionError(error.message);
     }
 

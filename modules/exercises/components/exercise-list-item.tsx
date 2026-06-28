@@ -35,12 +35,19 @@ export function ExerciseListItem({ workoutId, exercise }: ExerciseListItemProps)
       <li>
         <div className="list-card px-4 py-3.5">
           <div className="flex min-h-11 items-center justify-between gap-3">
-            <span
-              className="min-w-0 truncate font-semibold tracking-tight"
-              title={exercise.name}
-            >
-              {exercise.name}
-            </span>
+            <div className="min-w-0">
+              <span
+                className="block truncate font-semibold tracking-tight"
+                title={exercise.name}
+              >
+                {exercise.name}
+              </span>
+              {exercise.muscleGroup ? (
+                <span className="text-muted-foreground text-xs font-medium">
+                  {exercise.muscleGroup}
+                </span>
+              ) : null}
+            </div>
             <div className="flex shrink-0 items-center gap-2">
               {lastLoad ? (
                 <div className="flex flex-col items-end gap-0.5">
@@ -62,10 +69,12 @@ export function ExerciseListItem({ workoutId, exercise }: ExerciseListItemProps)
                   Sem registro
                 </span>
               )}
-              <EditActionButton
-                entityName={exercise.name}
-                onClick={() => setIsEditOpen(true)}
-              />
+              {exercise.isCustom ? (
+                <EditActionButton
+                  entityName={exercise.name}
+                  onClick={() => setIsEditOpen(true)}
+                />
+              ) : null}
               <DeleteActionButton
                 entityName={exercise.name}
                 onClick={() => setIsDeleteOpen(true)}

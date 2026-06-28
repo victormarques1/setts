@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/current-user";
+import { AddExerciseButton } from "@/modules/exercises/components/add-exercise-button";
 import { ExerciseList } from "@/modules/exercises/components/exercise-list";
 import { exerciseService } from "@/modules/exercises/services/exercise.service";
 import { ActiveSessionBanner } from "@/modules/sessions/components/active-session-banner";
@@ -59,16 +60,12 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
               <StartSessionButton workoutId={workoutId} />
             ) : null}
             {exercises.length > 0 ? (
-              <Button
-                className="w-full sm:w-auto"
+              <AddExerciseButton
+                workoutId={workoutId}
+                label="Adicionar exercício"
                 variant="outline"
-                render={
-                  <Link href={`/workouts/${workoutId}/exercises/new`} />
-                }
-                nativeButton={false}
-              >
-                Novo exercício
-              </Button>
+                className="w-full sm:w-auto"
+              />
             ) : null}
           </div>
         </div>
@@ -86,16 +83,12 @@ export default async function WorkoutPage({ params }: WorkoutPageProps) {
             <StartSessionBar workoutId={workoutId} />
           ) : null}
           <div className="flex flex-col gap-2 md:hidden">
-            <Button
-              className="w-full"
+            <AddExerciseButton
+              workoutId={workoutId}
+              label="Adicionar exercício"
               variant="outline"
-              render={
-                <Link href={`/workouts/${workoutId}/exercises/new`} />
-              }
-              nativeButton={false}
-            >
-              Novo exercício
-            </Button>
+              className="w-full"
+            />
           </div>
         </>
       ) : null}

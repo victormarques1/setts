@@ -1,9 +1,18 @@
 import { buildExerciseLoadSummaries } from "@/modules/exercises/lib/build-exercise-load-summaries";
-import { exerciseRepository } from "@/modules/exercises/repositories/exercise.repository";
 import {
-  createExerciseSchema,
-  type CreateExerciseInput,
-} from "@/modules/exercises/validations/exercise.schema";
+  exerciseRepository,
+  type WorkoutExercise,
+} from "@/modules/exercises/repositories/exercise.repository";
+import {
+  exerciseCatalogService,
+  ExerciseCatalogDuplicateError,
+} from "@/modules/exercises/services/exercise-catalog.service";
+import {
+  addExerciseToWorkoutSchema,
+  createCustomExerciseSchema,
+  type AddExerciseToWorkoutInput,
+  type CreateCustomExerciseInput,
+} from "@/modules/exercises/validations/exercise-catalog.schema";
 import { workoutRepository } from "@/modules/workouts/repositories/workout.repository";
 
 export class WorkoutNotFoundError extends Error {
@@ -12,6 +21,24 @@ export class WorkoutNotFoundError extends Error {
     this.name = "WorkoutNotFoundError";
   }
 }
+
+export class ExerciseAlreadyInWorkoutError extends Error {
+  constructor() {
+    super("Este exercício já foi adicionado ao treino.");
+    this.name = "ExerciseAlreadyInWorkoutError";
+  }
+}
+
+export class ExerciseCatalogNotFoundError extends Error {
+  constructor() {
+    super("Exercício não encontrado.");
+    this.name = "ExerciseCatalogNotFoundError";
+  }
+}
+
+export {
+  ExerciseCatalogDuplicateError,
+};
 
 export type UserExerciseSummary = {
   id: string;
@@ -27,11 +54,41 @@ export type UserExerciseSummary = {
 export type ExerciseSummary = {
   id: string;
   name: string;
+  muscleGroup: string | null;
+  isCustom: boolean;
   lastLoad: {
     weight: number;
     reps: number;
   } | null;
 };
+
+async function assertWorkoutOwnership(workoutId: string, userId: string) {
+  const workout = await workoutRepository.findByIdForUser(workoutId, userId);
+
+  if (!workout) {
+    throw new WorkoutNotFoundError();
+  }
+
+  return workout;
+}
+
+async function createWorkoutExercise(
+  workoutId: string,
+  exerciseCatalogId: string,
+): Promise<WorkoutExercise> {
+  const created = await exerciseRepository.create(workoutId, exerciseCatalogId);
+
+  return {
+    id: created.id,
+    workoutId: created.workoutId,
+    exerciseCatalogId: created.exerciseCatalogId,
+    createdAt: created.createdAt,
+    name: created.catalog.name,
+    muscleGroup: created.catalog.muscleGroup,
+    isPublic: created.catalog.isPublic,
+    isCustom: !created.catalog.isPublic,
+  };
+}
 
 export const exerciseService = {
   async listByUserId(userId: string): Promise<UserExerciseSummary[]> {
@@ -47,7 +104,7 @@ export const exerciseService = {
 
       return {
         id: exercise.id,
-        name: exercise.name,
+        name: exercise.catalog.name,
         workoutName: exercise.workout.name,
         lastLoad: summary?.lastLoad ?? null,
         trend: summary?.trend ?? null,
@@ -82,6 +139,8 @@ export const exerciseService = {
     return exercises.map((exercise) => ({
       id: exercise.id,
       name: exercise.name,
+      muscleGroup: exercise.muscleGroup,
+      isCustom: exercise.isCustom,
       lastLoad: lastLoadByExerciseId.get(exercise.id) ?? null,
     }));
   },
@@ -94,17 +153,52 @@ export const exerciseService = {
     return exerciseRepository.findByIdForWorkout(exerciseId, workoutId);
   },
 
-  async create(input: CreateExerciseInput, userId: string) {
-    const data = createExerciseSchema.parse(input);
-    const workout = await workoutRepository.findByIdForUser(
-      data.workoutId,
+  async getCatalogIdsInWorkout(workoutId: string) {
+    const exercises = await exerciseRepository.findCatalogIdsByWorkoutId(
+      workoutId,
+    );
+
+    return exercises.map((exercise) => exercise.exerciseCatalogId);
+  },
+
+  async addFromCatalog(input: AddExerciseToWorkoutInput, userId: string) {
+    const data = addExerciseToWorkoutSchema.parse(input);
+    await assertWorkoutOwnership(data.workoutId, userId);
+
+    const catalogItem = await exerciseCatalogService.getAccessibleById(
+      data.exerciseCatalogId,
       userId,
     );
 
-    if (!workout) {
-      throw new WorkoutNotFoundError();
+    if (!catalogItem) {
+      throw new ExerciseCatalogNotFoundError();
     }
 
-    return exerciseRepository.create(data);
+    const existing = await exerciseRepository.findByWorkoutAndCatalogId(
+      data.workoutId,
+      data.exerciseCatalogId,
+    );
+
+    if (existing) {
+      throw new ExerciseAlreadyInWorkoutError();
+    }
+
+    return createWorkoutExercise(data.workoutId, data.exerciseCatalogId);
+  },
+
+  async createCustomAndAdd(input: CreateCustomExerciseInput, userId: string) {
+    const data = createCustomExerciseSchema.parse(input);
+    await assertWorkoutOwnership(data.workoutId, userId);
+
+    const catalogItem = await exerciseCatalogService.createCustom(
+      {
+        name: data.name,
+        muscleGroup: data.muscleGroup,
+        workoutId: data.workoutId,
+      },
+      userId,
+    );
+
+    return createWorkoutExercise(data.workoutId, catalogItem.id);
   },
 };

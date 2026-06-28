@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  workouts     Workout[]
+  id              String            @id @default(cuid())
+  name            String
+  email           String            @unique
+  passwordHash    String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  workouts        Workout[]
+  exerciseCatalog ExerciseCatalog[]
 }
 
 model Workout {
@@ -30,15 +31,33 @@ model Workout {
   @@index([userId, deletedAt])
 }
 
-model Exercise {
-  id         String      @id @default(cuid())
-  workoutId  String
-  name       String
-  createdAt  DateTime    @default(now())
-  workout    Workout     @relation(fields: [workoutId], references: [id], onDelete: Cascade)
-  setRecords SetRecord[]
+model ExerciseCatalog {
+  id              String     @id @default(cuid())
+  name            String
+  muscleGroup     String?
+  isPublic        Boolean    @default(false)
+  createdByUserId String?
+  createdAt       DateTime   @default(now())
+  createdBy       User?      @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+  exercises       Exercise[]
 
+  @@index([isPublic])
+  @@index([createdByUserId])
+  @@index([name])
+}
+
+model Exercise {
+  id                String          @id @default(cuid())
+  workoutId         String
+  exerciseCatalogId String
+  createdAt         DateTime        @default(now())
+  workout           Workout         @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  catalog           ExerciseCatalog @relation(fields: [exerciseCatalogId], references: [id], onDelete: Restrict)
+  setRecords        SetRecord[]
+
+  @@unique([workoutId, exerciseCatalogId])
   @@index([workoutId])
+  @@index([exerciseCatalogId])
 }
 
 model WorkoutSession {

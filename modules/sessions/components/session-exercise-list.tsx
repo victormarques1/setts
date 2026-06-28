@@ -1,13 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import type { Exercise, SetRecord } from "@/app/generated/prisma/client";
+import { AddExerciseButton } from "@/modules/exercises/components/add-exercise-button";
+import type { WorkoutExercise } from "@/modules/exercises/repositories/exercise.repository";
+import type { SetRecord } from "@/app/generated/prisma/client";
 
 type SessionExerciseListProps = {
   workoutId: string;
   sessionId: string;
-  exercises: Exercise[];
+  exercises: WorkoutExercise[];
   setRecords: SetRecord[];
   isActive: boolean;
 };
@@ -29,14 +32,7 @@ export function SessionExerciseList({
           </p>
         </div>
         {isActive ? (
-          <Button
-            render={
-              <Link href={`/workouts/${workoutId}/exercises/new`} />
-            }
-            nativeButton={false}
-          >
-            Adicionar exercício
-          </Button>
+          <AddExerciseButton workoutId={workoutId} label="Adicionar exercício" />
         ) : null}
       </div>
     );
