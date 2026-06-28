@@ -58,7 +58,7 @@ export default async function ExerciseLoggerPage({
   const isActive = session.status === WorkoutSessionStatus.ACTIVE;
 
   return (
-    <div className={isActive ? "page-shell page-shell-sticky-form" : "page-shell"}>
+    <div className="page-shell">
       <div className="flex flex-col gap-4">
         <Button
           variant="ghost"

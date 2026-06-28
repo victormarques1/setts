@@ -1,16 +1,16 @@
 "use client";
 
-import { Minus, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatWeight } from "@/lib/format-weight";
@@ -21,7 +21,7 @@ type LastSet = {
 };
 
 type RecordSetResult =
-  | { success: true }
+  | { success: true; recordId: string }
   | { success: false; error: string };
 
 type SetLoggerFormProps = {
@@ -30,6 +30,8 @@ type SetLoggerFormProps = {
   nextSetNumber: number;
   lastSet: LastSet | null;
   onRecordSet: (weight: string, reps: string) => Promise<RecordSetResult>;
+  onRecordSuccess?: (recordId: string) => void;
+  onOpenChange?: (open: boolean) => void;
   isSubmitting: boolean;
 };
 
@@ -94,20 +96,49 @@ function StepperField({
   );
 }
 
+function CollapsedSummary({ lastSet }: { lastSet: LastSet | null }) {
+  if (!lastSet) {
+    return (
+      <span className="text-base font-bold tracking-tight">
+        Registrar primeira série
+      </span>
+    );
+  }
+
+  return (
+    <div className="flex min-w-0 flex-col gap-0.5">
+      <span className="text-base font-bold tracking-tight">Registrar Série</span>
+      <span className="text-muted-foreground truncate text-xs">
+        Última registrada:{" "}
+        <span className="font-semibold text-primary">
+          {formatWeight(lastSet.weight)}kg × {lastSet.reps} reps
+        </span>
+      </span>
+    </div>
+  );
+}
+
 export function SetLoggerForm({
   workoutId,
   sessionId,
   nextSetNumber,
   lastSet,
   onRecordSet,
+  onRecordSuccess,
+  onOpenChange,
   isSubmitting,
 }: SetLoggerFormProps) {
+  const [isOpen, setIsOpen] = useState(true);
   const [weight, setWeight] = useState(() =>
     lastSet ? formatWeight(lastSet.weight) : "",
   );
   const [reps, setReps] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  function handleOpenChange(open: boolean) {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  }
 
   function adjustWeight(delta: number) {
     setWeight((current) => {
@@ -144,7 +175,6 @@ export function SetLoggerForm({
     }
 
     setError(null);
-    setSuccessMessage(null);
 
     const submittedWeight = weight;
     const submittedReps = reps;
@@ -159,97 +189,128 @@ export function SetLoggerForm({
       navigator.vibrate(10);
     }
 
-    setSuccessMessage(
-      `Série ${nextSetNumber} registrada — ${submittedWeight} kg × ${submittedReps} reps`,
-    );
+    handleOpenChange(false);
+    onRecordSuccess?.(result.recordId);
     setReps("");
   }
 
   return (
-    <Card className="w-full border-primary/15 shadow-[0_-4px_24px_-4px_oklch(0_0_0/50%)]">
-      <CardHeader className="gap-2 pb-2">
-        <div className="flex items-center justify-between gap-3">
-          <CardTitle>Série {nextSetNumber}</CardTitle>
-          {lastSet ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleRepeatLast}
-              disabled={isSubmitting}
-            >
-              Repetir última
-            </Button>
-          ) : null}
+    <Card className="w-full gap-0 border-primary/15 py-0 shadow-[0_-4px_24px_-4px_oklch(0_0_0/50%)]">
+      <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
+        <div className="px-4 pt-4 sm:px-5">
+          <CollapsibleTrigger
+            aria-expanded={isOpen}
+            disabled={isSubmitting}
+            className="gap-3 py-1"
+          >
+            <div className="min-w-0 flex-1">
+              {isOpen ? (
+                <span className="text-base font-bold tracking-tight">
+                  Registrar nova série
+                </span>
+              ) : (
+                <CollapsedSummary lastSet={lastSet} />
+              )}
+            </div>
+            {isOpen ? (
+              <ChevronDown
+                className="text-muted-foreground size-5 shrink-0"
+                aria-hidden="true"
+              />
+            ) : (
+              <ChevronRight
+                className="text-muted-foreground size-5 shrink-0"
+                aria-hidden="true"
+              />
+            )}
+          </CollapsibleTrigger>
         </div>
-        {lastSet ? (
-          <p className="text-muted-foreground text-xs">
-            Última:{" "}
-            <span className="font-semibold text-primary">
-              {formatWeight(lastSet.weight)} kg × {lastSet.reps}
-            </span>
-          </p>
-        ) : null}
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
-            <StepperField
-              id="weight"
-              label="Peso (kg)"
-              value={weight}
-              onStep={adjustWeight}
-              disabled={isSubmitting}
-              hasError={error !== null}
-            />
-            <StepperField
-              id="reps"
-              label="Repetições"
-              value={reps}
-              onStep={adjustReps}
-              disabled={isSubmitting}
-              hasError={error !== null}
-            />
-          </div>
 
-          <div
-            aria-live="polite"
-            className={cn("min-h-5", !error && !successMessage && "sr-only")}
-          >
-            {error ? (
-              <p className="text-sm text-destructive" role="alert">
-                {error}
-              </p>
-            ) : null}
-            {successMessage ? (
-              <p className="text-sm font-medium text-primary">{successMessage}</p>
-            ) : null}
-          </div>
+        <CollapsiblePanel>
+          <CardContent className="pt-3 pb-5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-base font-bold tracking-tight">
+                  Série {nextSetNumber}
+                </p>
+                {lastSet ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRepeatLast}
+                    disabled={isSubmitting}
+                  >
+                    Repetir última
+                  </Button>
+                ) : null}
+              </div>
 
-          <Button
-            className="w-full"
-            size="lg"
-            type="submit"
-            disabled={isSubmitting}
-            aria-busy={isSubmitting}
-          >
-            {isSubmitting ? "Salvando..." : "Registrar série"}
-          </Button>
+              {lastSet ? (
+                <p className="text-muted-foreground -mt-2 text-xs">
+                  Última:{" "}
+                  <span className="font-semibold text-primary">
+                    {formatWeight(lastSet.weight)} kg × {lastSet.reps}
+                  </span>
+                </p>
+              ) : null}
 
-          <Button
-            className="w-full"
-            size="lg"
-            variant="outline"
-            render={
-              <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
-            }
-            nativeButton={false}
-            disabled={isSubmitting}
-          >
-            Finalizar exercício
-          </Button>
-        </form>
-      </CardContent>
+              <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
+                <StepperField
+                  id="weight"
+                  label="Peso (kg)"
+                  value={weight}
+                  onStep={adjustWeight}
+                  disabled={isSubmitting}
+                  hasError={error !== null}
+                />
+                <StepperField
+                  id="reps"
+                  label="Repetições"
+                  value={reps}
+                  onStep={adjustReps}
+                  disabled={isSubmitting}
+                  hasError={error !== null}
+                />
+              </div>
+
+              <div
+                aria-live="polite"
+                className={cn("min-h-5", !error && "sr-only")}
+              >
+                {error ? (
+                  <p className="text-sm text-destructive" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+              </div>
+
+              <Button
+                className="w-full"
+                size="lg"
+                type="submit"
+                disabled={isSubmitting}
+                aria-busy={isSubmitting}
+              >
+                {isSubmitting ? "Salvando..." : "Registrar série"}
+              </Button>
+
+              <Button
+                className="w-full"
+                size="lg"
+                variant="outline"
+                render={
+                  <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
+                }
+                nativeButton={false}
+                disabled={isSubmitting}
+              >
+                Finalizar exercício
+              </Button>
+            </form>
+          </CardContent>
+        </CollapsiblePanel>
+      </Collapsible>
     </Card>
   );
 }
