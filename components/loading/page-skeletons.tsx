@@ -82,7 +82,7 @@ export function SessionPageSkeleton() {
 
 export function SetLoggerPageSkeleton() {
   return (
-    <div className="page-shell page-shell-sticky-form">
+    <div className="page-shell">
       <div className="flex flex-col gap-4">
         <BackLinkSkeleton />
         <div className="flex items-start justify-between gap-3">
@@ -95,14 +95,12 @@ export function SetLoggerPageSkeleton() {
         <ListCardSkeletons count={2} />
       </div>
       <div className="fixed-above-nav-form">
-        <div className="list-card flex flex-col gap-4 px-4 py-5">
-          <Skeleton className="h-6 w-24" />
-          <div className="grid grid-cols-2 gap-4">
-            <Skeleton className="h-20 rounded-xl" />
-            <Skeleton className="h-20 rounded-xl" />
+        <div className="list-card flex flex-col gap-2 px-4 py-3">
+          <div className="flex justify-center">
+            <Skeleton className="size-9 rounded-full" />
           </div>
-          <Skeleton className="h-12 w-full rounded-xl" />
-          <Skeleton className="h-12 w-full rounded-xl" />
+          <Skeleton className="h-6 w-24" />
+          <Skeleton className="h-3 w-32" />
         </div>
       </div>
     </div>

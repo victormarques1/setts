@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useOptimistic, useTransition } from "react";
+import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 
 import type { SetRecord } from "@/app/generated/prisma/client";
 import { recordSetAction } from "@/modules/sessions/actions/session.actions";
@@ -53,6 +53,8 @@ export function ExerciseLoggerPanel({
   isActive,
 }: ExerciseLoggerPanelProps) {
   const router = useRouter();
+  const formContainerRef = useRef<HTMLDivElement>(null);
+  const [formSpacerHeight, setFormSpacerHeight] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [optimisticSets, addOptimisticSet] = useOptimistic(
     initialSets,
@@ -61,6 +63,28 @@ export function ExerciseLoggerPanel({
 
   const nextSetNumber = getNextSetNumber(optimisticSets);
   const lastSet = getLastSet(optimisticSets);
+
+  useEffect(() => {
+    const container = formContainerRef.current;
+
+    if (!container || !isActive) {
+      setFormSpacerHeight(0);
+      return;
+    }
+
+    const updateSpacerHeight = () => {
+      setFormSpacerHeight(container.offsetHeight);
+    };
+
+    updateSpacerHeight();
+
+    const resizeObserver = new ResizeObserver(updateSpacerHeight);
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isActive]);
 
   function handleRecordSet(weight: string, reps: string): Promise<RecordSetResult> {
     return new Promise((resolve) => {
@@ -104,7 +128,15 @@ export function ExerciseLoggerPanel({
       />
 
       {isActive ? (
-        <div className="fixed-above-nav-form">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none"
+          style={{ height: formSpacerHeight }}
+        />
+      ) : null}
+
+      {isActive ? (
+        <div ref={formContainerRef} className="fixed-above-nav-form">
           <SetLoggerForm
             workoutId={workoutId}
             sessionId={sessionId}
