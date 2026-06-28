@@ -95,10 +95,12 @@ export function SetLoggerPageSkeleton() {
         <ListCardSkeletons count={2} />
       </div>
       <div className="fixed-above-nav-form">
-        <div className="list-card flex flex-col gap-3 px-4 py-4">
-          <div className="flex items-center justify-between gap-3">
+        <div className="list-card flex flex-col gap-2 px-4 py-3">
+          <div className="flex justify-center pt-1">
+            <Skeleton className="h-1 w-10 rounded-full" />
+          </div>
+          <div className="flex items-center justify-between gap-3 pb-1">
             <Skeleton className="h-5 w-40" />
-            <Skeleton className="size-5 rounded-sm" />
           </div>
         </div>
       </div>

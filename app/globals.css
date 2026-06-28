@@ -324,6 +324,21 @@
     bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  .set-logger-sheet-viewport {
+    @apply pointer-events-none fixed inset-x-0 z-40 mx-auto max-w-2xl;
+    bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+  }
+
+  [data-hide-bottom-nav] .set-logger-sheet-viewport {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .set-logger-sheet-popup {
+    @apply pointer-events-auto touch-pan-y;
+  }
+
   .fixed-above-nav-bar {
     @apply fixed inset-x-0 z-40 border-t border-border/80 bg-background/95 px-[max(var(--page-gutter),env(safe-area-inset-left,0px))] py-3 backdrop-blur-md supports-[backdrop-filter]:bg-background/85;
     bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
