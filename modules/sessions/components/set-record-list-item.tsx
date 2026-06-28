@@ -40,7 +40,7 @@ export function SetRecordListItem({
 
   return (
     <>
-      <li id={`set-record-${set.id}`} data-set-record>
+      <li>
         <div
           className={isOptimistic ? "list-card px-4 py-3.5 opacity-60" : "list-card px-4 py-3.5"}
           aria-busy={isOptimistic ? true : undefined}

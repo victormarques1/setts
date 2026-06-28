@@ -2,24 +2,18 @@
 
 import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
-  DrawerContent,
-  DrawerPopup,
-  DrawerPortal,
-  DrawerRoot,
-  DrawerViewport,
-  type DrawerSnapPoint,
-} from "@/components/ui/drawer";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatWeight } from "@/lib/format-weight";
-
-const COLLAPSED_SNAP = "88px";
-const EXPANDED_SNAP = 0.58;
-const SNAP_POINTS: DrawerSnapPoint[] = [COLLAPSED_SNAP, EXPANDED_SNAP];
 
 type LastSet = {
   weight: number;
@@ -27,7 +21,7 @@ type LastSet = {
 };
 
 type RecordSetResult =
-  | { success: true; recordId: string }
+  | { success: true }
   | { success: false; error: string };
 
 type SetLoggerFormProps = {
@@ -36,34 +30,8 @@ type SetLoggerFormProps = {
   nextSetNumber: number;
   lastSet: LastSet | null;
   onRecordSet: (weight: string, reps: string) => Promise<RecordSetResult>;
-  onRecordSuccess?: (recordId: string) => void;
-  onSheetHeightChange?: (height: number) => void;
   isSubmitting: boolean;
 };
-
-function resolveSheetHeight(snapPoint: DrawerSnapPoint | null): number {
-  if (!snapPoint || snapPoint === COLLAPSED_SNAP) {
-    return 88;
-  }
-
-  if (typeof snapPoint === "number") {
-    if (snapPoint <= 1) {
-      return Math.round(window.innerHeight * snapPoint);
-    }
-
-    return snapPoint;
-  }
-
-  if (typeof snapPoint === "string" && snapPoint.endsWith("px")) {
-    return Number.parseFloat(snapPoint);
-  }
-
-  return Math.round(window.innerHeight * EXPANDED_SNAP);
-}
-
-function isCollapsedSnap(snapPoint: DrawerSnapPoint | null): boolean {
-  return snapPoint === COLLAPSED_SNAP;
-}
 
 function StepperField({
   id,
@@ -126,97 +94,20 @@ function StepperField({
   );
 }
 
-function CollapsedSummary({ lastSet }: { lastSet: LastSet | null }) {
-  if (!lastSet) {
-    return (
-      <span className="text-base font-bold tracking-tight">
-        Registrar primeira série
-      </span>
-    );
-  }
-
-  return (
-    <div className="flex min-w-0 flex-col gap-0.5">
-      <span className="text-base font-bold tracking-tight">Registrar Série</span>
-      <span className="text-muted-foreground truncate text-xs">
-        Última registrada:{" "}
-        <span className="font-semibold text-primary">
-          {formatWeight(lastSet.weight)}kg × {lastSet.reps} reps
-        </span>
-      </span>
-    </div>
-  );
-}
-
-function SheetDragHandle() {
-  return (
-    <div
-      className="flex shrink-0 justify-center pt-2.5 pb-1"
-      aria-hidden="true"
-    >
-      <div className="bg-muted-foreground/35 h-1 w-10 rounded-full" />
-    </div>
-  );
-}
-
 export function SetLoggerForm({
   workoutId,
   sessionId,
   nextSetNumber,
   lastSet,
   onRecordSet,
-  onRecordSuccess,
-  onSheetHeightChange,
   isSubmitting,
 }: SetLoggerFormProps) {
-  const [snapPoint, setSnapPoint] = useState<DrawerSnapPoint>(EXPANDED_SNAP);
   const [weight, setWeight] = useState(() =>
     lastSet ? formatWeight(lastSet.weight) : "",
   );
   const [reps, setReps] = useState("");
   const [error, setError] = useState<string | null>(null);
-
-  const isExpanded = !isCollapsedSnap(snapPoint);
-
-  const notifyHeightChange = useCallback(
-    (nextSnapPoint: DrawerSnapPoint | null) => {
-      onSheetHeightChange?.(resolveSheetHeight(nextSnapPoint));
-    },
-    [onSheetHeightChange],
-  );
-
-  useEffect(() => {
-    notifyHeightChange(snapPoint);
-
-    function handleResize() {
-      notifyHeightChange(snapPoint);
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [notifyHeightChange, snapPoint]);
-
-  function collapseSheet() {
-    setSnapPoint(COLLAPSED_SNAP);
-    notifyHeightChange(COLLAPSED_SNAP);
-  }
-
-  function expandSheet() {
-    setSnapPoint(EXPANDED_SNAP);
-    notifyHeightChange(EXPANDED_SNAP);
-  }
-
-  function handleSnapPointChange(nextSnapPoint: DrawerSnapPoint | null) {
-    if (!nextSnapPoint) {
-      return;
-    }
-
-    setSnapPoint(nextSnapPoint);
-    notifyHeightChange(nextSnapPoint);
-  }
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   function adjustWeight(delta: number) {
     setWeight((current) => {
@@ -253,6 +144,7 @@ export function SetLoggerForm({
     }
 
     setError(null);
+    setSuccessMessage(null);
 
     const submittedWeight = weight;
     const submittedReps = reps;
@@ -267,161 +159,97 @@ export function SetLoggerForm({
       navigator.vibrate(10);
     }
 
-    collapseSheet();
-    onRecordSuccess?.(result.recordId);
+    setSuccessMessage(
+      `Série ${nextSetNumber} registrada — ${submittedWeight} kg × ${submittedReps} reps`,
+    );
     setReps("");
   }
 
   return (
-    <DrawerRoot
-      defaultOpen
-      modal={false}
-      disablePointerDismissal
-      snapPoints={SNAP_POINTS}
-      snapPoint={snapPoint}
-      onSnapPointChange={handleSnapPointChange}
-      snapToSequentialPoints
-      swipeDirection="down"
-      onOpenChange={(open, eventDetails) => {
-        if (!open) {
-          eventDetails.cancel();
-          collapseSheet();
-        }
-      }}
-    >
-      <DrawerPortal>
-        <DrawerViewport>
-          <DrawerPopup initialFocus={false}>
-            <DrawerContent>
-              <button
-                type="button"
-                className="flex w-full shrink-0 flex-col px-4 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset sm:px-5"
-                aria-expanded={isExpanded}
-                aria-label={
-                  isExpanded
-                    ? "Recolher formulário de série"
-                    : "Expandir formulário de série"
-                }
-                onClick={() => {
-                  if (isExpanded) {
-                    collapseSheet();
-                    return;
-                  }
+    <Card className="w-full border-primary/15 shadow-[0_-4px_24px_-4px_oklch(0_0_0/50%)]">
+      <CardHeader className="gap-2 pb-2">
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle>Série {nextSetNumber}</CardTitle>
+          {lastSet ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRepeatLast}
+              disabled={isSubmitting}
+            >
+              Repetir última
+            </Button>
+          ) : null}
+        </div>
+        {lastSet ? (
+          <p className="text-muted-foreground text-xs">
+            Última:{" "}
+            <span className="font-semibold text-primary">
+              {formatWeight(lastSet.weight)} kg × {lastSet.reps}
+            </span>
+          </p>
+        ) : null}
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
+            <StepperField
+              id="weight"
+              label="Peso (kg)"
+              value={weight}
+              onStep={adjustWeight}
+              disabled={isSubmitting}
+              hasError={error !== null}
+            />
+            <StepperField
+              id="reps"
+              label="Repetições"
+              value={reps}
+              onStep={adjustReps}
+              disabled={isSubmitting}
+              hasError={error !== null}
+            />
+          </div>
 
-                  expandSheet();
-                }}
-                disabled={isSubmitting}
-              >
-                <SheetDragHandle />
-                <div className="min-h-11 pb-2">
-                  {isExpanded ? (
-                    <span className="text-base font-bold tracking-tight">
-                      Registrar nova série
-                    </span>
-                  ) : (
-                    <CollapsedSummary lastSet={lastSet} />
-                  )}
-                </div>
-              </button>
+          <div
+            aria-live="polite"
+            className={cn("min-h-5", !error && !successMessage && "sr-only")}
+          >
+            {error ? (
+              <p className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            ) : null}
+            {successMessage ? (
+              <p className="text-sm font-medium text-primary">{successMessage}</p>
+            ) : null}
+          </div>
 
-              <div
-                className={cn(
-                  "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-4 pb-5 sm:px-5",
-                  !isExpanded && "pointer-events-none opacity-0",
-                )}
-                aria-hidden={!isExpanded}
-              >
-                <form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-4"
-                  data-base-ui-swipe-ignore
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-base font-bold tracking-tight">
-                      Série {nextSetNumber}
-                    </p>
-                    {lastSet ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={handleRepeatLast}
-                        disabled={isSubmitting}
-                      >
-                        Repetir última
-                      </Button>
-                    ) : null}
-                  </div>
+          <Button
+            className="w-full"
+            size="lg"
+            type="submit"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? "Salvando..." : "Registrar série"}
+          </Button>
 
-                  {lastSet ? (
-                    <p className="text-muted-foreground -mt-2 text-xs">
-                      Última:{" "}
-                      <span className="font-semibold text-primary">
-                        {formatWeight(lastSet.weight)} kg × {lastSet.reps}
-                      </span>
-                    </p>
-                  ) : null}
-
-                  <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
-                    <StepperField
-                      id="weight"
-                      label="Peso (kg)"
-                      value={weight}
-                      onStep={adjustWeight}
-                      disabled={isSubmitting}
-                      hasError={error !== null}
-                    />
-                    <StepperField
-                      id="reps"
-                      label="Repetições"
-                      value={reps}
-                      onStep={adjustReps}
-                      disabled={isSubmitting}
-                      hasError={error !== null}
-                    />
-                  </div>
-
-                  <div
-                    aria-live="polite"
-                    className={cn("min-h-5", !error && "sr-only")}
-                  >
-                    {error ? (
-                      <p className="text-sm text-destructive" role="alert">
-                        {error}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    type="submit"
-                    disabled={isSubmitting}
-                    aria-busy={isSubmitting}
-                  >
-                    {isSubmitting ? "Salvando..." : "Registrar série"}
-                  </Button>
-
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    variant="outline"
-                    render={
-                      <Link
-                        href={`/workouts/${workoutId}/sessions/${sessionId}`}
-                      />
-                    }
-                    nativeButton={false}
-                    disabled={isSubmitting}
-                  >
-                    Finalizar exercício
-                  </Button>
-                </form>
-              </div>
-            </DrawerContent>
-          </DrawerPopup>
-        </DrawerViewport>
-      </DrawerPortal>
-    </DrawerRoot>
+          <Button
+            className="w-full"
+            size="lg"
+            variant="outline"
+            render={
+              <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
+            }
+            nativeButton={false}
+            disabled={isSubmitting}
+          >
+            Finalizar exercício
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

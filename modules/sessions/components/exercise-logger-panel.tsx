@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 
 import type { SetRecord } from "@/app/generated/prisma/client";
 import { recordSetAction } from "@/modules/sessions/actions/session.actions";
@@ -13,7 +13,7 @@ type OptimisticSetRecord = SetRecord & {
 };
 
 type RecordSetResult =
-  | { success: true; recordId: string }
+  | { success: true }
   | { success: false; error: string };
 
 type ExerciseLoggerPanelProps = {
@@ -53,7 +53,6 @@ export function ExerciseLoggerPanel({
   isActive,
 }: ExerciseLoggerPanelProps) {
   const router = useRouter();
-  const [sheetHeight, setSheetHeight] = useState(480);
   const [isPending, startTransition] = useTransition();
   const [optimisticSets, addOptimisticSet] = useOptimistic(
     initialSets,
@@ -63,24 +62,14 @@ export function ExerciseLoggerPanel({
   const nextSetNumber = getNextSetNumber(optimisticSets);
   const lastSet = getLastSet(optimisticSets);
 
-  function scrollToSetRecord(recordId: string) {
-    window.setTimeout(() => {
-      document.getElementById(`set-record-${recordId}`)?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }, 320);
-  }
-
   function handleRecordSet(weight: string, reps: string): Promise<RecordSetResult> {
     return new Promise((resolve) => {
       startTransition(async () => {
         const parsedWeight = Number.parseFloat(weight);
         const parsedReps = Number.parseInt(reps, 10);
-        const recordId = `optimistic-${Date.now()}`;
 
         addOptimisticSet({
-          id: recordId,
+          id: `optimistic-${Date.now()}`,
           sessionId,
           exerciseId,
           setNumber: nextSetNumber,
@@ -100,13 +89,9 @@ export function ExerciseLoggerPanel({
         }
 
         router.refresh();
-        resolve({ success: true, recordId });
+        resolve({ success: true });
       });
     });
-  }
-
-  function handleRecordSuccess(recordId: string) {
-    scrollToSetRecord(recordId);
   }
 
   return (
@@ -119,24 +104,16 @@ export function ExerciseLoggerPanel({
       />
 
       {isActive ? (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none"
-          style={{ height: sheetHeight }}
-        />
-      ) : null}
-
-      {isActive ? (
-        <SetLoggerForm
-          workoutId={workoutId}
-          sessionId={sessionId}
-          nextSetNumber={nextSetNumber}
-          lastSet={lastSet}
-          onRecordSet={handleRecordSet}
-          onRecordSuccess={handleRecordSuccess}
-          onSheetHeightChange={setSheetHeight}
-          isSubmitting={isPending}
-        />
+        <div className="fixed-above-nav-form">
+          <SetLoggerForm
+            workoutId={workoutId}
+            sessionId={sessionId}
+            nextSetNumber={nextSetNumber}
+            lastSet={lastSet}
+            onRecordSet={handleRecordSet}
+            isSubmitting={isPending}
+          />
+        </div>
       ) : null}
     </>
   );
