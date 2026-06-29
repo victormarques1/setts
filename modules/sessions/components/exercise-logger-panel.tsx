@@ -5,8 +5,8 @@ import { useEffect, useOptimistic, useRef, useState, useTransition } from "react
 
 import type { SetRecord } from "@/app/generated/prisma/client";
 import { recordSetAction } from "@/modules/sessions/actions/session.actions";
-import { SetLoggerForm } from "@/modules/sessions/components/set-logger-form";
 import { SetRecordList } from "@/modules/sessions/components/set-record-list";
+import { TrainingPanel } from "@/modules/sessions/components/training-panel";
 
 type OptimisticSetRecord = SetRecord & {
   isOptimistic?: boolean;
@@ -137,7 +137,7 @@ export function ExerciseLoggerPanel({
 
       {isActive ? (
         <div ref={formContainerRef} className="fixed-above-nav-form">
-          <SetLoggerForm
+          <TrainingPanel
             workoutId={workoutId}
             sessionId={sessionId}
             nextSetNumber={nextSetNumber}

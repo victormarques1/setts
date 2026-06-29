@@ -1,16 +1,10 @@
 "use client";
 
-import { ChevronDown, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatWeight } from "@/lib/format-weight";
@@ -24,7 +18,7 @@ type RecordSetResult =
   | { success: true }
   | { success: false; error: string };
 
-type SetLoggerFormProps = {
+type RegisterSetPanelProps = {
   workoutId: string;
   sessionId: string;
   nextSetNumber: number;
@@ -73,7 +67,7 @@ function StepperField({
           aria-live="polite"
           aria-invalid={hasError ? true : undefined}
           className={cn(
-            "min-w-[5.5rem] px-2 text-center text-4xl font-bold tabular-nums tracking-tight",
+            "min-w-22 px-2 text-center text-4xl font-bold tabular-nums tracking-tight",
             value ? "text-foreground" : "text-muted-foreground",
           )}
         >
@@ -94,21 +88,20 @@ function StepperField({
   );
 }
 
-export function SetLoggerForm({
+export function RegisterSetPanel({
   workoutId,
   sessionId,
   nextSetNumber,
   lastSet,
   onRecordSet,
   isSubmitting,
-}: SetLoggerFormProps) {
+}: RegisterSetPanelProps) {
   const [weight, setWeight] = useState(() =>
     lastSet ? formatWeight(lastSet.weight) : "",
   );
   const [reps, setReps] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   function adjustWeight(delta: number) {
     setWeight((current) => {
@@ -167,124 +160,82 @@ export function SetLoggerForm({
   }
 
   return (
-    <Card className="w-full gap-0 border-primary/15 py-0 shadow-[0_-4px_24px_-4px_oklch(0_0_0/50%)]">
-      <div className="flex justify-center pt-2">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="text-muted-foreground hover:text-foreground size-9 min-h-9 min-w-9 rounded-full"
-          aria-expanded={!isCollapsed}
-          aria-label={
-            isCollapsed ? "Expandir formulário de série" : "Recolher formulário de série"
-          }
-          onClick={() => setIsCollapsed((current) => !current)}
-          disabled={isSubmitting}
-        >
-          <ChevronDown
-            className={cn(
-              "size-5 transition-transform duration-200",
-              isCollapsed && "rotate-180",
-            )}
-            aria-hidden="true"
-          />
-        </Button>
-      </div>
-
-      <CardHeader className="gap-2 pt-0 pb-2">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {lastSet ? (
         <div className="flex items-center justify-between gap-3">
-          <CardTitle>Série {nextSetNumber}</CardTitle>
-          {lastSet && !isCollapsed ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleRepeatLast}
-              disabled={isSubmitting}
-            >
-              Repetir última
-            </Button>
-          ) : null}
-        </div>
-        {lastSet ? (
           <p className="text-muted-foreground text-xs">
             Última:{" "}
             <span className="font-semibold text-primary">
               {formatWeight(lastSet.weight)} kg × {lastSet.reps}
             </span>
           </p>
-        ) : null}
-      </CardHeader>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleRepeatLast}
+            disabled={isSubmitting}
+          >
+            Repetir última
+          </Button>
+        </div>
+      ) : null}
+
+      <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
+        <StepperField
+          id="weight"
+          label="Peso (kg)"
+          value={weight}
+          onStep={adjustWeight}
+          disabled={isSubmitting}
+          hasError={error !== null}
+        />
+        <StepperField
+          id="reps"
+          label="Repetições"
+          value={reps}
+          onStep={adjustReps}
+          disabled={isSubmitting}
+          hasError={error !== null}
+        />
+      </div>
 
       <div
-        className={cn(
-          "grid transition-[grid-template-rows] duration-200 ease-out",
-          isCollapsed ? "grid-rows-[0fr]" : "grid-rows-[1fr]",
-        )}
-        aria-hidden={isCollapsed}
+        aria-live="polite"
+        className={cn("min-h-5", !error && !successMessage && "sr-only")}
       >
-        <div className="min-h-0 overflow-hidden">
-          <CardContent className="pt-0">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
-                <StepperField
-                  id="weight"
-                  label="Peso (kg)"
-                  value={weight}
-                  onStep={adjustWeight}
-                  disabled={isSubmitting}
-                  hasError={error !== null}
-                />
-                <StepperField
-                  id="reps"
-                  label="Repetições"
-                  value={reps}
-                  onStep={adjustReps}
-                  disabled={isSubmitting}
-                  hasError={error !== null}
-                />
-              </div>
-
-              <div
-                aria-live="polite"
-                className={cn("min-h-5", !error && !successMessage && "sr-only")}
-              >
-                {error ? (
-                  <p className="text-sm text-destructive" role="alert">
-                    {error}
-                  </p>
-                ) : null}
-                {successMessage ? (
-                  <p className="text-sm font-medium text-primary">{successMessage}</p>
-                ) : null}
-              </div>
-
-              <Button
-                className="w-full"
-                size="lg"
-                type="submit"
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
-              >
-                {isSubmitting ? "Salvando..." : "Registrar série"}
-              </Button>
-
-              <Button
-                className="w-full"
-                size="lg"
-                variant="outline"
-                render={
-                  <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
-                }
-                nativeButton={false}
-                disabled={isSubmitting}
-              >
-                Finalizar exercício
-              </Button>
-            </form>
-          </CardContent>
-        </div>
+        {error ? (
+          <p className="text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        ) : null}
+        {successMessage ? (
+          <p className="text-sm font-medium text-primary">{successMessage}</p>
+        ) : null}
       </div>
-    </Card>
+
+      <Button
+        className="w-full"
+        size="lg"
+        type="submit"
+        disabled={isSubmitting}
+        aria-busy={isSubmitting}
+      >
+        {isSubmitting ? "Salvando..." : "Registrar série"}
+      </Button>
+
+      <Button
+        className="w-full"
+        size="lg"
+        variant="outline"
+        render={
+          <Link href={`/workouts/${workoutId}/sessions/${sessionId}`} />
+        }
+        nativeButton={false}
+        disabled={isSubmitting}
+      >
+        Finalizar exercício
+      </Button>
+    </form>
   );
 }
